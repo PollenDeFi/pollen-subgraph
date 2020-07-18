@@ -1,6 +1,33 @@
-type ExampleEntity @entity {
+enum ProposalType {
+  Invest
+  Divest
+  Last
+}
+
+enum TokenType {
+  ERC20
+  Last
+}
+
+enum ProposalStatus {
+  Null
+  Submitted
+  Executed
+  Last
+}
+
+type Proposal @entity {
   id: ID!
-  count: BigInt!
-  proposalType: Int! # uint8
-  executor: Bytes! # address
+  proposalType: ProposalType
+  assetTokenType: TokenType
+  assetTokenAddress: Bytes # address
+  assetTokenAmount: BigInt
+  pollenAmount: BigInt
+  submitter: Bytes # address
+  yesVotes: BigInt
+  noVotes: BigInt
+  votingExpiry: BigInt
+  executionOpen: BigInt
+  executionExpiry: BigInt
+  status: ProposalStatus
 }

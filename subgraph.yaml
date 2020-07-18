@@ -1,16 +1,16 @@
-specVersion: 0.0.1
+specVersion: 0.0.2
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Contract
+    name: Pollen
     network: ropsten
     source:
       address: "0x3e14121449B4F263A3278D64C30944ee3f8630D6"
-      abi: Contract
+      abi: PollenDAO
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.2
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
         - Executed
@@ -18,8 +18,8 @@ dataSources:
         - Submitted
         - VotedOn
       abis:
-        - name: Contract
-          file: ./abis/Contract.json
+        - name: PollenDAO
+          file: ./artifacts/contracts/PollenDAO.json
       eventHandlers:
         - event: Executed(uint8,address,uint256)
           handler: handleExecuted
