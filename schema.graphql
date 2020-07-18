@@ -1,0 +1,6 @@
+type ExampleEntity @entity {
+  id: ID!
+  count: BigInt!
+  proposalType: Int! # uint8
+  executor: Bytes! # address
+}
