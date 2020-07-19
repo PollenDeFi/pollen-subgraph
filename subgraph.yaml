@@ -13,10 +13,7 @@ dataSources:
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - Executed
-        - Redeemed
-        - Submitted
-        - VotedOn
+        - Proposal
       abis:
         - name: PollenDAO
           file: ./artifacts/contracts/PollenDAO.json
