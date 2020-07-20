@@ -8,55 +8,10 @@ import {
 } from '../generated/Pollen/PollenDAO';
 import { Proposal } from '../generated/schema';
 
-function getProposalType(i: u32): string {
-  let res: string;
-  switch (i) {
-    case 0:
-      res = 'Invest';
-      break;
-    case 1:
-      res = 'Divest';
-      break;
-  }
-  return res;
-}
-
-function getTokenType(i: u32): string {
-  let res: string;
-  switch (i) {
-    case 0:
-      res = 'ERC20';
-      break;
-  }
-  return res;
-}
-
-function getProposalStatus(i: u32): string {
-  let res: string;
-  switch (i) {
-    case 0:
-      res = 'Null';
-      break;
-    case 1:
-      res = 'Submitted';
-      break;
-    case 2:
-      res = 'Executed';
-      break;
-  }
-  return res;
-}
-
 export function handleSubmitted(event: Submitted): void {
-  let proposal = new Proposal(event.params.proposalId.toHex());
+  let proposal = new Proposal(event.params.proposalId.toString());
   // @ts-ignore
   let contract = PollenDAO.bind(event.address);
-  // let proposalResult = contract.try_getProposal(event.params.proposalId)
-  // if (proposalResult.reverted) {
-  //   log.info("getProposal reverted", [event.params.proposalId.toHex()])
-  // } else {
-  //   let proposal = proposalResult.value
-  // }
   let chainProposal = contract.getProposal(event.params.proposalId);
   proposal.proposalType = getProposalType(chainProposal.value0);
   proposal.assetTokenType = getTokenType(chainProposal.value1);
@@ -64,27 +19,27 @@ export function handleSubmitted(event: Submitted): void {
   proposal.assetTokenAmount = chainProposal.value3;
   proposal.pollenAmount = chainProposal.value4;
   proposal.submitter = chainProposal.value5;
-  proposal.yesVotes = chainProposal.value7;
+  proposal.yesVotes = chainProposal.value6;
   proposal.noVotes = chainProposal.value7;
   proposal.votingExpiry = chainProposal.value8;
   proposal.executionOpen = chainProposal.value9;
   proposal.executionExpiry = chainProposal.value10;
   proposal.status = getProposalStatus(chainProposal.value11);
-  proposal.status = 'Submitted';
   proposal.save();
 }
 
 export function handleVotedOn(event: VotedOn): void {
-  let proposal = Proposal.load(event.params.proposalId.toHex());
-
-  // proposal.status = "VotedOn";
+  let proposal = Proposal.load(event.params.proposalId.toString());
+  // @ts-ignore
+  let contract = PollenDAO.bind(event.address);
+  let chainProposal = contract.getProposal(event.params.proposalId);
+  proposal.yesVotes = chainProposal.value6;
+  proposal.noVotes = chainProposal.value7;
   proposal.save();
 }
 
 export function handleExecuted(event: Executed): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let proposal = Proposal.load(event.params.proposalId.toHex());
+  let proposal = Proposal.load(event.params.proposalId.toString());
 
   proposal.status = 'Executed';
   proposal.save();
@@ -92,7 +47,7 @@ export function handleExecuted(event: Executed): void {
   // // Entities only exist after they have been saved to the store;
   // // `null` checks allow to create entities on demand
   // if (entity == null) {
-  //   entity = new ExampleEntity(event.transaction.from.toHex())
+  //   entity = new ExampleEntity(event.transaction.from.toString())
 
   //   // Entity fields can be set using simple assignments
   //   entity.count = BigInt.fromI32(0)
@@ -135,3 +90,42 @@ export function handleExecuted(event: Executed): void {
 }
 
 export function handleRedeemed(event: Redeemed): void {}
+
+function getProposalType(i: u32): string {
+  let res: string;
+  switch (i) {
+    case 0:
+      res = 'Invest';
+      break;
+    case 1:
+      res = 'Divest';
+      break;
+  }
+  return res;
+}
+
+function getTokenType(i: u32): string {
+  let res: string;
+  switch (i) {
+    case 0:
+      res = 'ERC20';
+      break;
+  }
+  return res;
+}
+
+function getProposalStatus(i: u32): string {
+  let res: string;
+  switch (i) {
+    case 0:
+      res = 'Null';
+      break;
+    case 1:
+      res = 'Submitted';
+      break;
+    case 2:
+      res = 'Executed';
+      break;
+  }
+  return res;
+}

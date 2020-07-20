@@ -18,16 +18,16 @@ enum ProposalStatus {
 
 type Proposal @entity {
   id: ID!
-  proposalType: ProposalType
-  assetTokenType: TokenType
-  assetTokenAddress: Bytes # address
-  assetTokenAmount: BigInt
-  pollenAmount: BigInt
-  submitter: Bytes # address
-  yesVotes: BigInt
-  noVotes: BigInt
-  votingExpiry: BigInt
-  executionOpen: BigInt
-  executionExpiry: BigInt
-  status: ProposalStatus
+  proposalType: ProposalType!
+  assetTokenType: TokenType!
+  assetTokenAddress: Bytes!
+  assetTokenAmount: BigInt!
+  pollenAmount: BigInt!
+  submitter: Bytes!
+  yesVotes: BigInt!
+  noVotes: BigInt!
+  votingExpiry: BigInt!
+  executionOpen: BigInt!
+  executionExpiry: BigInt!
+  status: ProposalStatus!
 }

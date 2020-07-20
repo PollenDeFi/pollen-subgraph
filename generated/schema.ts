@@ -42,207 +42,111 @@ export class Proposal extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get proposalType(): string | null {
+  get proposalType(): string {
     let value = this.get("proposalType");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value.toString();
   }
 
-  set proposalType(value: string | null) {
-    if (value === null) {
-      this.unset("proposalType");
-    } else {
-      this.set("proposalType", Value.fromString(value as string));
-    }
+  set proposalType(value: string) {
+    this.set("proposalType", Value.fromString(value));
   }
 
-  get assetTokenType(): string | null {
+  get assetTokenType(): string {
     let value = this.get("assetTokenType");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value.toString();
   }
 
-  set assetTokenType(value: string | null) {
-    if (value === null) {
-      this.unset("assetTokenType");
-    } else {
-      this.set("assetTokenType", Value.fromString(value as string));
-    }
+  set assetTokenType(value: string) {
+    this.set("assetTokenType", Value.fromString(value));
   }
 
-  get assetTokenAddress(): Bytes | null {
+  get assetTokenAddress(): Bytes {
     let value = this.get("assetTokenAddress");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBytes();
-    }
+    return value.toBytes();
   }
 
-  set assetTokenAddress(value: Bytes | null) {
-    if (value === null) {
-      this.unset("assetTokenAddress");
-    } else {
-      this.set("assetTokenAddress", Value.fromBytes(value as Bytes));
-    }
+  set assetTokenAddress(value: Bytes) {
+    this.set("assetTokenAddress", Value.fromBytes(value));
   }
 
-  get assetTokenAmount(): BigInt | null {
+  get assetTokenAmount(): BigInt {
     let value = this.get("assetTokenAmount");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value.toBigInt();
   }
 
-  set assetTokenAmount(value: BigInt | null) {
-    if (value === null) {
-      this.unset("assetTokenAmount");
-    } else {
-      this.set("assetTokenAmount", Value.fromBigInt(value as BigInt));
-    }
+  set assetTokenAmount(value: BigInt) {
+    this.set("assetTokenAmount", Value.fromBigInt(value));
   }
 
-  get pollenAmount(): BigInt | null {
+  get pollenAmount(): BigInt {
     let value = this.get("pollenAmount");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value.toBigInt();
   }
 
-  set pollenAmount(value: BigInt | null) {
-    if (value === null) {
-      this.unset("pollenAmount");
-    } else {
-      this.set("pollenAmount", Value.fromBigInt(value as BigInt));
-    }
+  set pollenAmount(value: BigInt) {
+    this.set("pollenAmount", Value.fromBigInt(value));
   }
 
-  get submitter(): Bytes | null {
+  get submitter(): Bytes {
     let value = this.get("submitter");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBytes();
-    }
+    return value.toBytes();
   }
 
-  set submitter(value: Bytes | null) {
-    if (value === null) {
-      this.unset("submitter");
-    } else {
-      this.set("submitter", Value.fromBytes(value as Bytes));
-    }
+  set submitter(value: Bytes) {
+    this.set("submitter", Value.fromBytes(value));
   }
 
-  get yesVotes(): BigInt | null {
+  get yesVotes(): BigInt {
     let value = this.get("yesVotes");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value.toBigInt();
   }
 
-  set yesVotes(value: BigInt | null) {
-    if (value === null) {
-      this.unset("yesVotes");
-    } else {
-      this.set("yesVotes", Value.fromBigInt(value as BigInt));
-    }
+  set yesVotes(value: BigInt) {
+    this.set("yesVotes", Value.fromBigInt(value));
   }
 
-  get noVotes(): BigInt | null {
+  get noVotes(): BigInt {
     let value = this.get("noVotes");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value.toBigInt();
   }
 
-  set noVotes(value: BigInt | null) {
-    if (value === null) {
-      this.unset("noVotes");
-    } else {
-      this.set("noVotes", Value.fromBigInt(value as BigInt));
-    }
+  set noVotes(value: BigInt) {
+    this.set("noVotes", Value.fromBigInt(value));
   }
 
-  get votingExpiry(): BigInt | null {
+  get votingExpiry(): BigInt {
     let value = this.get("votingExpiry");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value.toBigInt();
   }
 
-  set votingExpiry(value: BigInt | null) {
-    if (value === null) {
-      this.unset("votingExpiry");
-    } else {
-      this.set("votingExpiry", Value.fromBigInt(value as BigInt));
-    }
+  set votingExpiry(value: BigInt) {
+    this.set("votingExpiry", Value.fromBigInt(value));
   }
 
-  get executionOpen(): BigInt | null {
+  get executionOpen(): BigInt {
     let value = this.get("executionOpen");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value.toBigInt();
   }
 
-  set executionOpen(value: BigInt | null) {
-    if (value === null) {
-      this.unset("executionOpen");
-    } else {
-      this.set("executionOpen", Value.fromBigInt(value as BigInt));
-    }
+  set executionOpen(value: BigInt) {
+    this.set("executionOpen", Value.fromBigInt(value));
   }
 
-  get executionExpiry(): BigInt | null {
+  get executionExpiry(): BigInt {
     let value = this.get("executionExpiry");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value.toBigInt();
   }
 
-  set executionExpiry(value: BigInt | null) {
-    if (value === null) {
-      this.unset("executionExpiry");
-    } else {
-      this.set("executionExpiry", Value.fromBigInt(value as BigInt));
-    }
+  set executionExpiry(value: BigInt) {
+    this.set("executionExpiry", Value.fromBigInt(value));
   }
 
-  get status(): string | null {
+  get status(): string {
     let value = this.get("status");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value.toString();
   }
 
-  set status(value: string | null) {
-    if (value === null) {
-      this.unset("status");
-    } else {
-      this.set("status", Value.fromString(value as string));
-    }
+  set status(value: string) {
+    this.set("status", Value.fromString(value));
   }
 }
