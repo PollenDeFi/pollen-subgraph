@@ -69,22 +69,22 @@ export class Proposal extends Entity {
     this.set("assetTokenAddress", Value.fromBytes(value));
   }
 
-  get assetTokenAmount(): BigInt {
+  get assetTokenAmount(): BigDecimal {
     let value = this.get("assetTokenAmount");
-    return value.toBigInt();
+    return value.toBigDecimal();
   }
 
-  set assetTokenAmount(value: BigInt) {
-    this.set("assetTokenAmount", Value.fromBigInt(value));
+  set assetTokenAmount(value: BigDecimal) {
+    this.set("assetTokenAmount", Value.fromBigDecimal(value));
   }
 
-  get pollenAmount(): BigInt {
+  get pollenAmount(): BigDecimal {
     let value = this.get("pollenAmount");
-    return value.toBigInt();
+    return value.toBigDecimal();
   }
 
-  set pollenAmount(value: BigInt) {
-    this.set("pollenAmount", Value.fromBigInt(value));
+  set pollenAmount(value: BigDecimal) {
+    this.set("pollenAmount", Value.fromBigDecimal(value));
   }
 
   get submitter(): Bytes {
@@ -96,22 +96,22 @@ export class Proposal extends Entity {
     this.set("submitter", Value.fromBytes(value));
   }
 
-  get yesVotes(): BigInt {
+  get yesVotes(): BigDecimal {
     let value = this.get("yesVotes");
-    return value.toBigInt();
+    return value.toBigDecimal();
   }
 
-  set yesVotes(value: BigInt) {
-    this.set("yesVotes", Value.fromBigInt(value));
+  set yesVotes(value: BigDecimal) {
+    this.set("yesVotes", Value.fromBigDecimal(value));
   }
 
-  get noVotes(): BigInt {
+  get noVotes(): BigDecimal {
     let value = this.get("noVotes");
-    return value.toBigInt();
+    return value.toBigDecimal();
   }
 
-  set noVotes(value: BigInt) {
-    this.set("noVotes", Value.fromBigInt(value));
+  set noVotes(value: BigDecimal) {
+    this.set("noVotes", Value.fromBigDecimal(value));
   }
 
   get votingExpiry(): BigInt {

@@ -21,11 +21,11 @@ type Proposal @entity {
   proposalType: ProposalType!
   assetTokenType: TokenType!
   assetTokenAddress: Bytes!
-  assetTokenAmount: BigInt!
-  pollenAmount: BigInt!
+  assetTokenAmount: BigDecimal!
+  pollenAmount: BigDecimal!
   submitter: Bytes!
-  yesVotes: BigInt!
-  noVotes: BigInt!
+  yesVotes: BigDecimal!
+  noVotes: BigDecimal!
   votingExpiry: BigInt!
   executionOpen: BigInt!
   executionExpiry: BigInt!
