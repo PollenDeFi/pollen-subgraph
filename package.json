@@ -1,5 +1,5 @@
 {
-  "name": "pollen-subgraph",
+  "name": "@pollen/subgraph",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
