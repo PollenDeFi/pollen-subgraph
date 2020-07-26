@@ -3,13 +3,21 @@ The cache/data translation layer for Pollen.
 URL: https://thegraph.com/explorer/subgraph/pollendefi/pollen
 
 ## Development
-### Install
+
+Install
+
 `$ yarn install`
-### After making changes to the entities scheme or the ABIs, build the AssemblyScript types
+
+After making changes to the entities scheme or the ABIs, build the AssemblyScript types
+
 `$ yarn codegen`
-### Check that code is safe (including mappings)
+
+Check that code is safe (including mappings)
+
 `$ yarn build`
-### Deploy subgraph after authenticating using: `graph auth https://api.thegraph.com/deploy/ <YOUR_TOKEN>`
+
+Deploy subgraph after authenticating using: `graph auth https://api.thegraph.com/deploy/ <YOUR_TOKEN>`
+
 `$ yarn deploy`
 
 ## License
