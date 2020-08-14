@@ -14,32 +14,39 @@ import {
   getProposalStatus,
   convertEthToDecimal,
   convertSolTimestampToJs,
+  TokenType,
+  ProposalStatus,
 } from "./helpers";
 
 export function handleSubmitted(event: Submitted): void {
   let proposal = new Proposal(event.params.proposalId.toString());
-  // @ts-ignore
-  let contract = PollenDAO.bind(event.address);
-  let assetContract = GenericERC20.bind(event.params.assetTokenAddress);
-  let chainProposal = contract.getProposal(event.params.proposalId);
-  proposal.proposalType = getProposalType(chainProposal.value0);
-  let asset = AssetToken.load(event.params.assetTokenAddress.toHexString());
-  if (asset == null) {
-    asset = new AssetToken(event.params.assetTokenAddress.toHexString());
-  }
-  asset.name = assetContract.name();
-  asset.symbol = assetContract.symbol();
-  asset.type = getTokenType(chainProposal.value1);
-  asset.save();
-  proposal.assetToken = asset.id;
-  proposal.assetTokenAmount = convertEthToDecimal(
-    chainProposal.value3 as BigInt
+  proposal.proposalType = getProposalType(event.params.proposalType);
+  let assetToken = AssetToken.load(
+    event.params.assetTokenAddress.toHexString()
   );
-  proposal.pollenAmount = convertEthToDecimal(chainProposal.value4 as BigInt);
+  if (assetToken == null) {
+    assetToken = new AssetToken(event.params.assetTokenAddress.toHexString());
+  }
+  let assetTokenType = getTokenType(event.params.assetTokenType);
+  if (assetTokenType === TokenType.ERC20) {
+    let assetContract = GenericERC20.bind(event.params.assetTokenAddress);
+    assetToken.name = assetContract.name();
+    assetToken.symbol = assetContract.symbol();
+    assetToken.type = assetTokenType;
+    assetToken.save();
+  }
+  proposal.assetToken = assetToken.id;
+  proposal.assetTokenAmount = convertEthToDecimal(
+    event.params.assetTokenAmount
+  );
+  proposal.pollenAmount = convertEthToDecimal(event.params.pollenAmount);
   proposal.description = ipfs
     .cat("QmUpbbXcmpcXvfnKGSLocCZGTh3Qr8vnHxW5o8heRG6wDC")
     .toString();
   // TODO: use checksum addresses
+  // @ts-ignore
+  let contract = PollenDAO.bind(event.address);
+  let chainProposal = contract.getProposal(event.params.proposalId);
   proposal.submitter = chainProposal.value5;
   proposal.yesVotes = convertEthToDecimal(chainProposal.value6 as BigInt);
   proposal.noVotes = convertEthToDecimal(chainProposal.value7 as BigInt);
@@ -62,7 +69,7 @@ export function handleVotedOn(event: VotedOn): void {
 
 export function handleExecuted(event: Executed): void {
   let proposal = Proposal.load(event.params.proposalId.toString());
-  proposal.status = "Executed";
+  proposal.status = ProposalStatus.Executed;
   proposal.save();
 }
 

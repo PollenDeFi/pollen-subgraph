@@ -1,13 +1,13 @@
-import { BigInt, BigDecimal } from '@graphprotocol/graph-ts';
+import { BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 
 export let ZERO_BI = BigInt.fromI32(0);
 export let ONE_BI = BigInt.fromI32(1);
 export let BI_18 = BigInt.fromI32(18);
 
 export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
-  let bd = BigDecimal.fromString('1');
+  let bd = BigDecimal.fromString("1");
   for (let i = ZERO_BI; i.lt(decimals as BigInt); i = i.plus(ONE_BI)) {
-    bd = bd.times(BigDecimal.fromString('10'));
+    bd = bd.times(BigDecimal.fromString("10"));
   }
   return bd;
 }
@@ -20,49 +20,58 @@ export function convertSolTimestampToJs(timestamp: BigInt): BigInt {
   return timestamp.times(BigInt.fromI32(1000));
 }
 
+export class ProposalType {
+  static Invest: string = "Invest";
+  static Divest: string = "Divest";
+}
+
+// @ts-ignore
 export function getProposalType(i: u32): string {
   let res: string;
   switch (i) {
     case 0:
-      res = 'Invest';
+      res = ProposalType.Invest;
       break;
     case 1:
-      res = 'Divest';
-      break;
-    default:
-      res = 'Last';
+      res = ProposalType.Divest;
       break;
   }
   return res;
 }
 
+export class TokenType {
+  static ERC20: string = "ERC20";
+}
+
+// @ts-ignore
 export function getTokenType(i: u32): string {
   let res: string;
   switch (i) {
     case 0:
-      res = 'ERC20';
-      break;
-    default:
-      res = 'Last';
+      res = TokenType.ERC20;
       break;
   }
   return res;
 }
 
+export class ProposalStatus {
+  static Null: string = "Null";
+  static Submitted: string = "Submitted";
+  static Executed: string = "Executed";
+}
+
+// @ts-ignore
 export function getProposalStatus(i: u32): string {
   let res: string;
   switch (i) {
     case 0:
-      res = 'Null';
+      res = ProposalStatus.Null;
       break;
     case 1:
-      res = 'Submitted';
+      res = ProposalStatus.Submitted;
       break;
     case 2:
-      res = 'Executed';
-      break;
-    default:
-      res = 'Last';
+      res = ProposalStatus.Executed;
       break;
   }
   return res;
