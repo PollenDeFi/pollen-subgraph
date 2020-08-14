@@ -17,6 +17,8 @@ dataSources:
       abis:
         - name: PollenDAO
           file: ./artifacts/contracts/PollenDAO.json
+        - name: GenericERC20
+          file: ./artifacts/contracts/ERC20Detailed.json
       eventHandlers:
         - event: Executed(uint8,address,uint256)
           handler: handleExecuted

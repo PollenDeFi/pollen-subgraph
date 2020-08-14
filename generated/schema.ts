@@ -51,22 +51,13 @@ export class Proposal extends Entity {
     this.set("proposalType", Value.fromString(value));
   }
 
-  get assetTokenType(): string {
-    let value = this.get("assetTokenType");
+  get assetToken(): string {
+    let value = this.get("assetToken");
     return value.toString();
   }
 
-  set assetTokenType(value: string) {
-    this.set("assetTokenType", Value.fromString(value));
-  }
-
-  get assetTokenAddress(): Bytes {
-    let value = this.get("assetTokenAddress");
-    return value.toBytes();
-  }
-
-  set assetTokenAddress(value: Bytes) {
-    this.set("assetTokenAddress", Value.fromBytes(value));
+  set assetToken(value: string) {
+    this.set("assetToken", Value.fromString(value));
   }
 
   get assetTokenAmount(): BigDecimal {
@@ -157,5 +148,63 @@ export class Proposal extends Entity {
 
   set status(value: string) {
     this.set("status", Value.fromString(value));
+  }
+}
+
+export class AssetToken extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save AssetToken entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save AssetToken entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("AssetToken", id.toString(), this);
+  }
+
+  static load(id: string): AssetToken | null {
+    return store.get("AssetToken", id) as AssetToken | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    return value.toString();
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get symbol(): string {
+    let value = this.get("symbol");
+    return value.toString();
+  }
+
+  set symbol(value: string) {
+    this.set("symbol", Value.fromString(value));
+  }
+
+  get type(): string {
+    let value = this.get("type");
+    return value.toString();
+  }
+
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
   }
 }

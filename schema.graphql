@@ -19,8 +19,7 @@ enum ProposalStatus {
 type Proposal @entity {
   id: ID!
   proposalType: ProposalType!
-  assetTokenType: TokenType!
-  assetTokenAddress: Bytes!
+  assetToken: AssetToken!
   assetTokenAmount: BigDecimal!
   pollenAmount: BigDecimal!
   description: String!
@@ -31,4 +30,11 @@ type Proposal @entity {
   executionOpen: BigInt!
   executionExpiry: BigInt!
   status: ProposalStatus!
+}
+
+type AssetToken @entity {
+  id: ID!
+  name: String!
+  symbol: String!
+  type: TokenType!
 }

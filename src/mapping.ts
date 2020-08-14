@@ -6,7 +6,8 @@ import {
   Submitted,
   VotedOn,
 } from "../generated/Pollen/PollenDAO";
-import { Proposal } from "../generated/schema";
+import { GenericERC20 } from "../generated/Pollen/GenericERC20";
+import { Proposal, AssetToken } from "../generated/schema";
 import {
   getProposalType,
   getTokenType,
@@ -19,10 +20,18 @@ export function handleSubmitted(event: Submitted): void {
   let proposal = new Proposal(event.params.proposalId.toString());
   // @ts-ignore
   let contract = PollenDAO.bind(event.address);
+  let assetContract = GenericERC20.bind(event.params.assetTokenAddress);
   let chainProposal = contract.getProposal(event.params.proposalId);
   proposal.proposalType = getProposalType(chainProposal.value0);
-  proposal.assetTokenType = getTokenType(chainProposal.value1);
-  proposal.assetTokenAddress = chainProposal.value2;
+  let asset = AssetToken.load(event.params.assetTokenAddress.toHexString());
+  if (asset == null) {
+    asset = new AssetToken(event.params.assetTokenAddress.toHexString());
+  }
+  asset.name = assetContract.name();
+  asset.symbol = assetContract.symbol();
+  asset.type = getTokenType(chainProposal.value1);
+  asset.save();
+  proposal.assetToken = asset.id;
   proposal.assetTokenAmount = convertEthToDecimal(
     chainProposal.value3 as BigInt
   );
@@ -30,6 +39,7 @@ export function handleSubmitted(event: Submitted): void {
   proposal.description = ipfs
     .cat("QmUpbbXcmpcXvfnKGSLocCZGTh3Qr8vnHxW5o8heRG6wDC")
     .toString();
+  // TODO: use checksum addresses
   proposal.submitter = chainProposal.value5;
   proposal.yesVotes = convertEthToDecimal(chainProposal.value6 as BigInt);
   proposal.noVotes = convertEthToDecimal(chainProposal.value7 as BigInt);
