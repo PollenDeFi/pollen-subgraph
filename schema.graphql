@@ -23,6 +23,7 @@ type Proposal @entity {
   assetTokenAddress: Bytes!
   assetTokenAmount: BigDecimal!
   pollenAmount: BigDecimal!
+  description: String!
   submitter: Bytes!
   yesVotes: BigDecimal!
   noVotes: BigDecimal!

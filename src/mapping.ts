@@ -1,19 +1,19 @@
-import { BigInt } from '@graphprotocol/graph-ts';
+import { BigInt, ipfs } from "@graphprotocol/graph-ts";
 import {
   PollenDAO,
   Executed,
   Redeemed,
   Submitted,
   VotedOn,
-} from '../generated/Pollen/PollenDAO';
-import { Proposal } from '../generated/schema';
+} from "../generated/Pollen/PollenDAO";
+import { Proposal } from "../generated/schema";
 import {
   getProposalType,
   getTokenType,
   getProposalStatus,
   convertEthToDecimal,
   convertSolTimestampToJs,
-} from './helpers';
+} from "./helpers";
 
 export function handleSubmitted(event: Submitted): void {
   let proposal = new Proposal(event.params.proposalId.toString());
@@ -27,6 +27,9 @@ export function handleSubmitted(event: Submitted): void {
     chainProposal.value3 as BigInt
   );
   proposal.pollenAmount = convertEthToDecimal(chainProposal.value4 as BigInt);
+  proposal.description = ipfs
+    .cat("QmUpbbXcmpcXvfnKGSLocCZGTh3Qr8vnHxW5o8heRG6wDC")
+    .toString();
   proposal.submitter = chainProposal.value5;
   proposal.yesVotes = convertEthToDecimal(chainProposal.value6 as BigInt);
   proposal.noVotes = convertEthToDecimal(chainProposal.value7 as BigInt);
@@ -49,7 +52,7 @@ export function handleVotedOn(event: VotedOn): void {
 
 export function handleExecuted(event: Executed): void {
   let proposal = Proposal.load(event.params.proposalId.toString());
-  proposal.status = 'Executed';
+  proposal.status = "Executed";
   proposal.save();
 }
 
