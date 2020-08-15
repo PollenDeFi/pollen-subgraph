@@ -42,5 +42,6 @@ type AssetToken @entity {
 
 type Portfolio @entity {
   id: ID!
-  tokens: [AssetToken!]
+  account: Bytes!
+  assets: [AssetToken!]
 }

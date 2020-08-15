@@ -248,8 +248,17 @@ export class Portfolio extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get tokens(): Array<string> | null {
-    let value = this.get("tokens");
+  get account(): Bytes {
+    let value = this.get("account");
+    return value.toBytes();
+  }
+
+  set account(value: Bytes) {
+    this.set("account", Value.fromBytes(value));
+  }
+
+  get assets(): Array<string> | null {
+    let value = this.get("assets");
     if (value === null) {
       return null;
     } else {
@@ -257,11 +266,11 @@ export class Portfolio extends Entity {
     }
   }
 
-  set tokens(value: Array<string> | null) {
+  set assets(value: Array<string> | null) {
     if (value === null) {
-      this.unset("tokens");
+      this.unset("assets");
     } else {
-      this.set("tokens", Value.fromStringArray(value as Array<string>));
+      this.set("assets", Value.fromStringArray(value as Array<string>));
     }
   }
 }

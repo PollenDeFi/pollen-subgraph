@@ -18,6 +18,8 @@ import {
   ProposalStatus,
 } from "./helpers";
 
+const portfolioId = "0";
+
 export function handleSubmitted(event: Submitted): void {
   let proposal = new Proposal(event.params.proposalId.toString());
   proposal.proposalType = getProposalType(event.params.proposalType);
@@ -81,25 +83,24 @@ export function handleExecuted(event: Executed): void {
     assetContract.balanceOf(event.address)
   );
   assetToken.save();
-  let portfolio = Portfolio.load("");
+  let portfolio = Portfolio.load(portfolioId);
   if (portfolio == null) {
-    portfolio = new Portfolio("");
+    portfolio = new Portfolio(portfolioId);
   }
-  if (!portfolio.tokens.includes(assetToken.id)) {
-    portfolio.tokens = portfolio.tokens.concat([assetToken.id]);
+  portfolio.account = event.address;
+  if (!portfolio.assets.includes(assetToken.id)) {
+    portfolio.assets = portfolio.assets.concat([assetToken.id]);
   }
   portfolio.save();
 }
 
 export function handleRedeemed(event: Redeemed): void {
-  let portfolio = Portfolio.load("");
-  portfolio.tokens.forEach((tokenId) => {
+  Portfolio.load(portfolioId).assets.forEach((tokenId) => {
     let assetToken = AssetToken.load(tokenId);
     let assetContract = GenericERC20.bind(Address.fromString(assetToken.id));
+    let accountStr = Portfolio.load(portfolioId).account.toHexString();
     assetToken.daoBalance = convertEthToDecimal(
-      assetContract.balanceOf(
-        Address.fromString("0x3e14121449B4F263A3278D64C30944ee3f8630D6")
-      )
+      assetContract.balanceOf(Address.fromString(accountStr))
     );
     assetToken.save();
   });
