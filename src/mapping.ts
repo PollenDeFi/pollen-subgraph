@@ -1,4 +1,4 @@
-import { BigInt, ipfs } from "@graphprotocol/graph-ts";
+import { BigInt, ipfs, Address } from "@graphprotocol/graph-ts";
 import {
   PollenDAO,
   Executed,
@@ -7,7 +7,7 @@ import {
   VotedOn,
 } from "../generated/Pollen/PollenDAO";
 import { GenericERC20 } from "../generated/Pollen/GenericERC20";
-import { Proposal, AssetToken } from "../generated/schema";
+import { Proposal, AssetToken, Portfolio } from "../generated/schema";
 import {
   getProposalType,
   getTokenType,
@@ -29,10 +29,14 @@ export function handleSubmitted(event: Submitted): void {
   }
   let assetTokenType = getTokenType(event.params.assetTokenType);
   if (assetTokenType === TokenType.ERC20) {
+    // TODO: update daoBalance on any ERC20 transfer event (separate mapping)
     let assetContract = GenericERC20.bind(event.params.assetTokenAddress);
     assetToken.name = assetContract.name();
     assetToken.symbol = assetContract.symbol();
     assetToken.type = assetTokenType;
+    assetToken.daoBalance = convertEthToDecimal(
+      assetContract.balanceOf(event.address)
+    );
     assetToken.save();
   }
   proposal.assetToken = assetToken.id;
@@ -71,6 +75,32 @@ export function handleExecuted(event: Executed): void {
   let proposal = Proposal.load(event.params.proposalId.toString());
   proposal.status = ProposalStatus.Executed;
   proposal.save();
+  let assetToken = AssetToken.load(proposal.assetToken);
+  let assetContract = GenericERC20.bind(Address.fromString(assetToken.id));
+  assetToken.daoBalance = convertEthToDecimal(
+    assetContract.balanceOf(event.address)
+  );
+  assetToken.save();
+  let portfolio = Portfolio.load("");
+  if (portfolio == null) {
+    portfolio = new Portfolio("");
+  }
+  if (!portfolio.tokens.includes(assetToken.id)) {
+    portfolio.tokens = portfolio.tokens.concat([assetToken.id]);
+  }
+  portfolio.save();
 }
 
-export function handleRedeemed(event: Redeemed): void {}
+export function handleRedeemed(event: Redeemed): void {
+  let portfolio = Portfolio.load("");
+  portfolio.tokens.forEach((tokenId) => {
+    let assetToken = AssetToken.load(tokenId);
+    let assetContract = GenericERC20.bind(Address.fromString(assetToken.id));
+    assetToken.daoBalance = convertEthToDecimal(
+      assetContract.balanceOf(
+        Address.fromString("0x3e14121449B4F263A3278D64C30944ee3f8630D6")
+      )
+    );
+    assetToken.save();
+  });
+}

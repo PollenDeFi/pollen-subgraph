@@ -207,4 +207,61 @@ export class AssetToken extends Entity {
   set type(value: string) {
     this.set("type", Value.fromString(value));
   }
+
+  get daoBalance(): BigDecimal {
+    let value = this.get("daoBalance");
+    return value.toBigDecimal();
+  }
+
+  set daoBalance(value: BigDecimal) {
+    this.set("daoBalance", Value.fromBigDecimal(value));
+  }
+}
+
+export class Portfolio extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Portfolio entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Portfolio entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Portfolio", id.toString(), this);
+  }
+
+  static load(id: string): Portfolio | null {
+    return store.get("Portfolio", id) as Portfolio | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get tokens(): Array<string> | null {
+    let value = this.get("tokens");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set tokens(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("tokens");
+    } else {
+      this.set("tokens", Value.fromStringArray(value as Array<string>));
+    }
+  }
 }

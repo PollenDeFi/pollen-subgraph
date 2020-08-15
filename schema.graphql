@@ -37,4 +37,10 @@ type AssetToken @entity {
   name: String!
   symbol: String!
   type: TokenType!
+  daoBalance: BigDecimal!
+}
+
+type Portfolio @entity {
+  id: ID!
+  tokens: [AssetToken!]
 }
