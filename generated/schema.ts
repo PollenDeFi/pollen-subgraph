@@ -248,13 +248,13 @@ export class Portfolio extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get account(): Bytes {
-    let value = this.get("account");
+  get contract(): Bytes {
+    let value = this.get("contract");
     return value.toBytes();
   }
 
-  set account(value: Bytes) {
-    this.set("account", Value.fromBytes(value));
+  set contract(value: Bytes) {
+    this.set("contract", Value.fromBytes(value));
   }
 
   get assets(): Array<string> | null {

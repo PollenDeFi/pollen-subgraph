@@ -87,7 +87,7 @@ export function handleExecuted(event: Executed): void {
   if (portfolio == null) {
     portfolio = new Portfolio(portfolioId);
   }
-  portfolio.account = event.address;
+  portfolio.contract = event.address;
   if (!portfolio.assets.includes(assetToken.id)) {
     portfolio.assets = portfolio.assets.concat([assetToken.id]);
   }
@@ -98,9 +98,9 @@ export function handleRedeemed(event: Redeemed): void {
   Portfolio.load(portfolioId).assets.forEach((tokenId) => {
     let assetToken = AssetToken.load(tokenId);
     let assetContract = GenericERC20.bind(Address.fromString(assetToken.id));
-    let accountStr = Portfolio.load(portfolioId).account.toHexString();
+    let contractStr = Portfolio.load(portfolioId).contract.toHexString();
     assetToken.daoBalance = convertEthToDecimal(
-      assetContract.balanceOf(Address.fromString(accountStr))
+      assetContract.balanceOf(Address.fromString(contractStr))
     );
     assetToken.save();
   });
