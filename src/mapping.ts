@@ -54,6 +54,8 @@ export function handleSubmitted(event: Submitted): void {
   let contract = PollenDAO.bind(event.address);
   let chainProposal = contract.getProposal(event.params.proposalId);
   proposal.submitter = chainProposal.value5;
+  // TODO: add snapshotId
+  // proposal.snapshotId = event.params.snapshotId;
   proposal.yesVotes = convertEthToDecimal(chainProposal.value6 as BigInt);
   proposal.noVotes = convertEthToDecimal(chainProposal.value7 as BigInt);
   proposal.votingExpiry = convertSolTimestampToJs(chainProposal.value8);
