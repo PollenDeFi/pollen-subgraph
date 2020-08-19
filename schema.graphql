@@ -24,6 +24,7 @@ type Proposal @entity {
   pollenAmount: BigDecimal!
   description: String!
   submitter: Bytes!
+  snapshotId: String!
   yesVotes: BigDecimal!
   noVotes: BigDecimal!
   votingExpiry: BigInt!

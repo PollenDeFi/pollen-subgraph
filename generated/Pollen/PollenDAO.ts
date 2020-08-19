@@ -23,16 +23,8 @@ export class Executed__Params {
     this._event = event;
   }
 
-  get proposalType(): i32 {
-    return this._event.parameters[0].value.toI32();
-  }
-
-  get executor(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
   get proposalId(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
+    return this._event.parameters[0].value.toBigInt();
   }
 }
 
@@ -71,28 +63,20 @@ export class Submitted__Params {
     this._event = event;
   }
 
-  get proposalType(): i32 {
-    return this._event.parameters[0].value.toI32();
+  get proposalId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
   }
 
-  get assetTokenType(): i32 {
+  get proposalType(): i32 {
     return this._event.parameters[1].value.toI32();
   }
 
-  get assetTokenAddress(): Address {
+  get submitter(): Address {
     return this._event.parameters[2].value.toAddress();
   }
 
-  get assetTokenAmount(): BigInt {
+  get snapshotId(): BigInt {
     return this._event.parameters[3].value.toBigInt();
-  }
-
-  get pollenAmount(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
-  }
-
-  get proposalId(): BigInt {
-    return this._event.parameters[5].value.toBigInt();
   }
 }
 
@@ -109,36 +93,31 @@ export class VotedOn__Params {
     this._event = event;
   }
 
-  get proposalType(): i32 {
-    return this._event.parameters[0].value.toI32();
+  get proposalId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
   }
 
   get voter(): Address {
     return this._event.parameters[1].value.toAddress();
   }
 
-  get proposalId(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
-  }
-
   get vote(): boolean {
-    return this._event.parameters[3].value.toBoolean();
+    return this._event.parameters[2].value.toBoolean();
   }
 }
 
-export class PollenDAO__getProposalResult {
+export class PollenDAO__getProposalDataResult {
   value0: i32;
   value1: i32;
   value2: Address;
   value3: BigInt;
   value4: BigInt;
-  value5: Address;
-  value6: BigInt;
+  value5: string;
+  value6: Address;
   value7: BigInt;
   value8: BigInt;
   value9: BigInt;
-  value10: BigInt;
-  value11: i32;
+  value10: i32;
 
   constructor(
     value0: i32,
@@ -146,13 +125,12 @@ export class PollenDAO__getProposalResult {
     value2: Address,
     value3: BigInt,
     value4: BigInt,
-    value5: Address,
-    value6: BigInt,
+    value5: string,
+    value6: Address,
     value7: BigInt,
     value8: BigInt,
     value9: BigInt,
-    value10: BigInt,
-    value11: i32
+    value10: i32
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -165,7 +143,6 @@ export class PollenDAO__getProposalResult {
     this.value8 = value8;
     this.value9 = value9;
     this.value10 = value10;
-    this.value11 = value11;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
@@ -181,16 +158,35 @@ export class PollenDAO__getProposalResult {
     map.set("value2", ethereum.Value.fromAddress(this.value2));
     map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
     map.set("value4", ethereum.Value.fromUnsignedBigInt(this.value4));
-    map.set("value5", ethereum.Value.fromAddress(this.value5));
-    map.set("value6", ethereum.Value.fromUnsignedBigInt(this.value6));
+    map.set("value5", ethereum.Value.fromString(this.value5));
+    map.set("value6", ethereum.Value.fromAddress(this.value6));
     map.set("value7", ethereum.Value.fromUnsignedBigInt(this.value7));
     map.set("value8", ethereum.Value.fromUnsignedBigInt(this.value8));
     map.set("value9", ethereum.Value.fromUnsignedBigInt(this.value9));
-    map.set("value10", ethereum.Value.fromUnsignedBigInt(this.value10));
     map.set(
-      "value11",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value11))
+      "value10",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value10))
     );
+    return map;
+  }
+}
+
+export class PollenDAO__getProposalTimestampsResult {
+  value0: BigInt;
+  value1: BigInt;
+  value2: BigInt;
+
+  constructor(value0: BigInt, value1: BigInt, value2: BigInt) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
     return map;
   }
 }
@@ -223,35 +219,34 @@ export class PollenDAO extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getProposal(proposalId: BigInt): PollenDAO__getProposalResult {
+  getProposalData(proposalId: BigInt): PollenDAO__getProposalDataResult {
     let result = super.call(
-      "getProposal",
-      "getProposal(uint256):(uint8,uint8,address,uint256,uint256,address,uint256,uint256,uint256,uint256,uint256,uint8)",
+      "getProposalData",
+      "getProposalData(uint256):(uint8,uint8,address,uint256,uint256,string,address,uint256,uint256,uint256,uint8)",
       [ethereum.Value.fromUnsignedBigInt(proposalId)]
     );
 
-    return new PollenDAO__getProposalResult(
+    return new PollenDAO__getProposalDataResult(
       result[0].toI32(),
       result[1].toI32(),
       result[2].toAddress(),
       result[3].toBigInt(),
       result[4].toBigInt(),
-      result[5].toAddress(),
-      result[6].toBigInt(),
+      result[5].toString(),
+      result[6].toAddress(),
       result[7].toBigInt(),
       result[8].toBigInt(),
       result[9].toBigInt(),
-      result[10].toBigInt(),
-      result[11].toI32()
+      result[10].toI32()
     );
   }
 
-  try_getProposal(
+  try_getProposalData(
     proposalId: BigInt
-  ): ethereum.CallResult<PollenDAO__getProposalResult> {
+  ): ethereum.CallResult<PollenDAO__getProposalDataResult> {
     let result = super.tryCall(
-      "getProposal",
-      "getProposal(uint256):(uint8,uint8,address,uint256,uint256,address,uint256,uint256,uint256,uint256,uint256,uint8)",
+      "getProposalData",
+      "getProposalData(uint256):(uint8,uint8,address,uint256,uint256,string,address,uint256,uint256,uint256,uint8)",
       [ethereum.Value.fromUnsignedBigInt(proposalId)]
     );
     if (result.reverted) {
@@ -259,19 +254,55 @@ export class PollenDAO extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new PollenDAO__getProposalResult(
+      new PollenDAO__getProposalDataResult(
         value[0].toI32(),
         value[1].toI32(),
         value[2].toAddress(),
         value[3].toBigInt(),
         value[4].toBigInt(),
-        value[5].toAddress(),
-        value[6].toBigInt(),
+        value[5].toString(),
+        value[6].toAddress(),
         value[7].toBigInt(),
         value[8].toBigInt(),
         value[9].toBigInt(),
-        value[10].toBigInt(),
-        value[11].toI32()
+        value[10].toI32()
+      )
+    );
+  }
+
+  getProposalTimestamps(
+    proposalId: BigInt
+  ): PollenDAO__getProposalTimestampsResult {
+    let result = super.call(
+      "getProposalTimestamps",
+      "getProposalTimestamps(uint256):(uint256,uint256,uint256)",
+      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+    );
+
+    return new PollenDAO__getProposalTimestampsResult(
+      result[0].toBigInt(),
+      result[1].toBigInt(),
+      result[2].toBigInt()
+    );
+  }
+
+  try_getProposalTimestamps(
+    proposalId: BigInt
+  ): ethereum.CallResult<PollenDAO__getProposalTimestampsResult> {
+    let result = super.tryCall(
+      "getProposalTimestamps",
+      "getProposalTimestamps(uint256):(uint256,uint256,uint256)",
+      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new PollenDAO__getProposalTimestampsResult(
+        value[0].toBigInt(),
+        value[1].toBigInt(),
+        value[2].toBigInt()
       )
     );
   }
@@ -497,6 +528,10 @@ export class SubmitCall__Inputs {
 
   get pollenAmount(): BigInt {
     return this._call.inputValues[4].value.toBigInt();
+  }
+
+  get descriptionCid(): string {
+    return this._call.inputValues[5].value.toString();
   }
 }
 

@@ -96,6 +96,15 @@ export class Proposal extends Entity {
     this.set("submitter", Value.fromBytes(value));
   }
 
+  get snapshotId(): string {
+    let value = this.get("snapshotId");
+    return value.toString();
+  }
+
+  set snapshotId(value: string) {
+    this.set("snapshotId", Value.fromString(value));
+  }
+
   get yesVotes(): BigDecimal {
     let value = this.get("yesVotes");
     return value.toBigDecimal();

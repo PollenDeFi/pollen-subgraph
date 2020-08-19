@@ -21,47 +21,51 @@ import {
 const portfolioId = "0";
 
 export function handleSubmitted(event: Submitted): void {
-  let proposal = new Proposal(event.params.proposalId.toString());
-  proposal.proposalType = getProposalType(event.params.proposalType);
-  let assetToken = AssetToken.load(
-    event.params.assetTokenAddress.toHexString()
+  // @ts-ignore
+  let contract = PollenDAO.bind(event.address);
+  let chainProposalData = contract.getProposalData(event.params.proposalId);
+  let chainProposalTimeStamps = contract.getProposalTimestamps(
+    event.params.proposalId
   );
+
+  let proposal = new Proposal(event.params.proposalId.toString());
+  proposal.proposalType = getProposalType(chainProposalData.value0);
+  let assetTokenType = getTokenType(chainProposalData.value1);
+  let assetToken = AssetToken.load(chainProposalData.value2.toHexString());
   if (assetToken == null) {
-    assetToken = new AssetToken(event.params.assetTokenAddress.toHexString());
+    assetToken = new AssetToken(chainProposalData.value2.toHexString());
   }
-  let assetTokenType = getTokenType(event.params.assetTokenType);
   if (assetTokenType === TokenType.ERC20) {
     // TODO: update daoBalance on any ERC20 transfer event (separate mapping)
-    let assetContract = GenericERC20.bind(event.params.assetTokenAddress);
+    let assetContract = GenericERC20.bind(chainProposalData.value2);
     assetToken.name = assetContract.name();
     assetToken.symbol = assetContract.symbol();
     assetToken.type = assetTokenType;
     assetToken.daoBalance = convertEthToDecimal(
+      // @ts-ignore
       assetContract.balanceOf(event.address)
     );
     assetToken.save();
   }
   proposal.assetToken = assetToken.id;
-  proposal.assetTokenAmount = convertEthToDecimal(
-    event.params.assetTokenAmount
+  proposal.assetTokenAmount = convertEthToDecimal(chainProposalData.value3);
+  proposal.pollenAmount = convertEthToDecimal(chainProposalData.value4);
+  proposal.description = ipfs.cat(chainProposalData.value5).toString();
+  proposal.submitter = chainProposalData.value6;
+  proposal.snapshotId = chainProposalData.value7.toHexString();
+  proposal.yesVotes = convertEthToDecimal(chainProposalData.value8 as BigInt);
+  proposal.noVotes = convertEthToDecimal(chainProposalData.value9 as BigInt);
+  proposal.status = getProposalStatus(chainProposalData.value10);
+
+  proposal.votingExpiry = convertSolTimestampToJs(
+    chainProposalTimeStamps.value0
   );
-  proposal.pollenAmount = convertEthToDecimal(event.params.pollenAmount);
-  proposal.description = ipfs
-    .cat("QmUpbbXcmpcXvfnKGSLocCZGTh3Qr8vnHxW5o8heRG6wDC")
-    .toString();
-  // TODO: use checksum addresses
-  // @ts-ignore
-  let contract = PollenDAO.bind(event.address);
-  let chainProposal = contract.getProposal(event.params.proposalId);
-  proposal.submitter = chainProposal.value5;
-  // TODO: add snapshotId
-  // proposal.snapshotId = event.params.snapshotId;
-  proposal.yesVotes = convertEthToDecimal(chainProposal.value6 as BigInt);
-  proposal.noVotes = convertEthToDecimal(chainProposal.value7 as BigInt);
-  proposal.votingExpiry = convertSolTimestampToJs(chainProposal.value8);
-  proposal.executionOpen = convertSolTimestampToJs(chainProposal.value9);
-  proposal.executionExpiry = convertSolTimestampToJs(chainProposal.value10);
-  proposal.status = getProposalStatus(chainProposal.value11);
+  proposal.executionOpen = convertSolTimestampToJs(
+    chainProposalTimeStamps.value1
+  );
+  proposal.executionExpiry = convertSolTimestampToJs(
+    chainProposalTimeStamps.value2
+  );
   proposal.save();
 }
 
@@ -69,9 +73,9 @@ export function handleVotedOn(event: VotedOn): void {
   let proposal = Proposal.load(event.params.proposalId.toString());
   // @ts-ignore
   let contract = PollenDAO.bind(event.address);
-  let chainProposal = contract.getProposal(event.params.proposalId);
-  proposal.yesVotes = convertEthToDecimal(chainProposal.value6 as BigInt);
-  proposal.noVotes = convertEthToDecimal(chainProposal.value7 as BigInt);
+  let chainProposalData = contract.getProposalData(event.params.proposalId);
+  proposal.yesVotes = convertEthToDecimal(chainProposalData.value8 as BigInt);
+  proposal.noVotes = convertEthToDecimal(chainProposalData.value9 as BigInt);
   proposal.save();
 }
 
@@ -82,6 +86,7 @@ export function handleExecuted(event: Executed): void {
   let assetToken = AssetToken.load(proposal.assetToken);
   let assetContract = GenericERC20.bind(Address.fromString(assetToken.id));
   assetToken.daoBalance = convertEthToDecimal(
+    // @ts-ignore
     assetContract.balanceOf(event.address)
   );
   assetToken.save();
@@ -89,6 +94,7 @@ export function handleExecuted(event: Executed): void {
   if (portfolio == null) {
     portfolio = new Portfolio(portfolioId);
   }
+  // @ts-ignore
   portfolio.contract = event.address;
   if (!portfolio.assets.includes(assetToken.id)) {
     portfolio.assets = portfolio.assets.concat([assetToken.id]);
