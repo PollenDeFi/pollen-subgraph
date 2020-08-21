@@ -96,13 +96,13 @@ export class Proposal extends Entity {
     this.set("submitter", Value.fromBytes(value));
   }
 
-  get snapshotId(): string {
-    let value = this.get("snapshotId");
+  get snapshot(): string {
+    let value = this.get("snapshot");
     return value.toString();
   }
 
-  set snapshotId(value: string) {
-    this.set("snapshotId", Value.fromString(value));
+  set snapshot(value: string) {
+    this.set("snapshot", Value.fromString(value));
   }
 
   get yesVotes(): BigDecimal {
@@ -157,6 +157,46 @@ export class Proposal extends Entity {
 
   set status(value: string) {
     this.set("status", Value.fromString(value));
+  }
+}
+
+export class Snapshot extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Snapshot entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Snapshot entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Snapshot", id.toString(), this);
+  }
+
+  static load(id: string): Snapshot | null {
+    return store.get("Snapshot", id) as Snapshot | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get pollenSupply(): BigDecimal {
+    let value = this.get("pollenSupply");
+    return value.toBigDecimal();
+  }
+
+  set pollenSupply(value: BigDecimal) {
+    this.set("pollenSupply", Value.fromBigDecimal(value));
   }
 }
 

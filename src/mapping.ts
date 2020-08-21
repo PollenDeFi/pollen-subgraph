@@ -6,8 +6,9 @@ import {
   Submitted,
   VotedOn,
 } from "../generated/Pollen/PollenDAO";
+import { PollenToken } from "../generated/Pollen/PollenToken";
 import { GenericERC20 } from "../generated/Pollen/GenericERC20";
-import { Proposal, AssetToken, Portfolio } from "../generated/schema";
+import { Proposal, AssetToken, Portfolio, Snapshot } from "../generated/schema";
 import {
   getProposalType,
   getTokenType,
@@ -23,6 +24,7 @@ const portfolioId = "0";
 export function handleSubmitted(event: Submitted): void {
   // @ts-ignore
   let contract = PollenDAO.bind(event.address);
+  let pollenToken = PollenToken.bind(contract.getPollenAddress());
   let chainProposalData = contract.getProposalData(event.params.proposalId);
   let chainProposalTimeStamps = contract.getProposalTimestamps(
     event.params.proposalId
@@ -52,7 +54,17 @@ export function handleSubmitted(event: Submitted): void {
   proposal.pollenAmount = convertEthToDecimal(chainProposalData.value4);
   proposal.description = ipfs.cat(chainProposalData.value5).toString();
   proposal.submitter = chainProposalData.value6;
-  proposal.snapshotId = chainProposalData.value7.toHexString();
+
+  let snapshotId = chainProposalData.value7;
+  let snapshot = Snapshot.load(snapshotId.toHexString());
+  if (snapshot == null) {
+    snapshot = new Snapshot(snapshotId.toHexString());
+    snapshot.pollenSupply = convertEthToDecimal(
+      pollenToken.totalSupplyAt(snapshotId)
+    );
+    snapshot.save();
+  }
+  proposal.snapshot = snapshot.id;
   proposal.yesVotes = convertEthToDecimal(chainProposalData.value8 as BigInt);
   proposal.noVotes = convertEthToDecimal(chainProposalData.value9 as BigInt);
   proposal.status = getProposalStatus(chainProposalData.value10);

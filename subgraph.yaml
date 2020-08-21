@@ -9,7 +9,7 @@ dataSources:
       address: "0xb34fb1bA9e70208828Ca68eD9014b4460CB9ef81"
       abi: PollenDAO
       # TODO: adjust for mainnet
-      startBlock: 8000000
+      startBlock: 8500000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -19,6 +19,8 @@ dataSources:
       abis:
         - name: PollenDAO
           file: ./artifacts/contracts/PollenDAO.json
+        - name: PollenToken
+          file: ./artifacts/contracts/Pollen.json
         - name: GenericERC20
           file: ./artifacts/contracts/ERC20Detailed.json
       eventHandlers:

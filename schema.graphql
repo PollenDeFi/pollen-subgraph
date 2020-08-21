@@ -24,13 +24,18 @@ type Proposal @entity {
   pollenAmount: BigDecimal!
   description: String!
   submitter: Bytes!
-  snapshotId: String!
+  snapshot: Snapshot!
   yesVotes: BigDecimal!
   noVotes: BigDecimal!
   votingExpiry: BigInt!
   executionOpen: BigInt!
   executionExpiry: BigInt!
   status: ProposalStatus!
+}
+
+type Snapshot @entity {
+  id: ID!
+  pollenSupply: BigDecimal!
 }
 
 type AssetToken @entity {
