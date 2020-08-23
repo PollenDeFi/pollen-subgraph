@@ -1,4 +1,4 @@
-import { BigInt, ipfs, Address } from "@graphprotocol/graph-ts";
+import { BigInt, ipfs, Address, BigDecimal } from "@graphprotocol/graph-ts";
 import {
   PollenDAO,
   Executed,
@@ -15,6 +15,7 @@ import {
   getProposalStatus,
   convertEthToDecimal,
   convertSolTimestampToJs,
+  calculateVoteQuota,
   TokenType,
   ProposalStatus,
 } from "./helpers";
@@ -68,7 +69,15 @@ export function handleSubmitted(event: Submitted): void {
   proposal.yesVotes = convertEthToDecimal(chainProposalData.value8 as BigInt);
   proposal.noVotes = convertEthToDecimal(chainProposalData.value9 as BigInt);
   proposal.status = getProposalStatus(chainProposalData.value10);
-
+  let voteQuota = calculateVoteQuota(
+    snapshot.pollenSupply,
+    contract.getQuorum().toBigDecimal()
+  );
+  if (proposal.yesVotes > proposal.noVotes && proposal.yesVotes >= voteQuota) {
+    proposal.votePassed = true;
+  } else {
+    proposal.votePassed = false;
+  }
   proposal.votingExpiry = convertSolTimestampToJs(
     chainProposalTimeStamps.value0
   );
@@ -85,9 +94,19 @@ export function handleVotedOn(event: VotedOn): void {
   let proposal = Proposal.load(event.params.proposalId.toString());
   // @ts-ignore
   let contract = PollenDAO.bind(event.address);
+  let snapshot = Snapshot.load(proposal.snapshot);
   let chainProposalData = contract.getProposalData(event.params.proposalId);
   proposal.yesVotes = convertEthToDecimal(chainProposalData.value8 as BigInt);
   proposal.noVotes = convertEthToDecimal(chainProposalData.value9 as BigInt);
+  let voteQuota = calculateVoteQuota(
+    snapshot.pollenSupply,
+    contract.getQuorum().toBigDecimal()
+  );
+  if (proposal.yesVotes > proposal.noVotes && proposal.yesVotes >= voteQuota) {
+    proposal.votePassed = true;
+  } else {
+    proposal.votePassed = false;
+  }
   proposal.save();
 }
 

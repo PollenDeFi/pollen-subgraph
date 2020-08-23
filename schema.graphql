@@ -31,6 +31,7 @@ type Proposal @entity {
   executionOpen: BigInt!
   executionExpiry: BigInt!
   status: ProposalStatus!
+  votePassed: Boolean!
   executedAt: BigInt
 }
 

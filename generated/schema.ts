@@ -159,6 +159,15 @@ export class Proposal extends Entity {
     this.set("status", Value.fromString(value));
   }
 
+  get votePassed(): boolean {
+    let value = this.get("votePassed");
+    return value.toBoolean();
+  }
+
+  set votePassed(value: boolean) {
+    this.set("votePassed", Value.fromBoolean(value));
+  }
+
   get executedAt(): BigInt | null {
     let value = this.get("executedAt");
     if (value === null) {

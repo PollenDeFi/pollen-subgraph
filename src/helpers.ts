@@ -20,6 +20,13 @@ export function convertSolTimestampToJs(timestamp: BigInt): BigInt {
   return timestamp.times(BigInt.fromI32(1000));
 }
 
+export function calculateVoteQuota(
+  supply: BigDecimal,
+  quorum: BigDecimal
+): BigDecimal {
+  return supply.times(quorum).div(BigInt.fromI32(100).toBigDecimal());
+}
+
 export class ProposalType {
   static Invest: string = "Invest";
   static Divest: string = "Divest";
