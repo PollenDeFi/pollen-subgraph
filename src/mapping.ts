@@ -94,6 +94,8 @@ export function handleVotedOn(event: VotedOn): void {
 export function handleExecuted(event: Executed): void {
   let proposal = Proposal.load(event.params.proposalId.toString());
   proposal.status = ProposalStatus.Executed;
+  // @ts-ignore
+  proposal.executedAt = convertSolTimestampToJs(event.block.timestamp);
   proposal.save();
   let assetToken = AssetToken.load(proposal.assetToken);
   let assetContract = GenericERC20.bind(Address.fromString(assetToken.id));

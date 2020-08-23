@@ -158,6 +158,23 @@ export class Proposal extends Entity {
   set status(value: string) {
     this.set("status", Value.fromString(value));
   }
+
+  get executedAt(): BigInt | null {
+    let value = this.get("executedAt");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set executedAt(value: BigInt | null) {
+    if (value === null) {
+      this.unset("executedAt");
+    } else {
+      this.set("executedAt", Value.fromBigInt(value as BigInt));
+    }
+  }
 }
 
 export class Snapshot extends Entity {
