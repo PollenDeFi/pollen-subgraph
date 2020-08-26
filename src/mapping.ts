@@ -75,7 +75,7 @@ export function handleSubmitted(event: Submitted): void {
   );
   if (
     proposal.yesVotes > proposal.noVotes &&
-    proposal.yesVotes.plus(proposal.noVotes) >= voteQuota
+    proposal.yesVotes.plus(proposal.noVotes) > voteQuota
   ) {
     proposal.votePassed = true;
   } else {
@@ -107,7 +107,7 @@ export function handleVotedOn(event: VotedOn): void {
   );
   if (
     proposal.yesVotes > proposal.noVotes &&
-    proposal.yesVotes.plus(proposal.noVotes) >= voteQuota
+    proposal.yesVotes.plus(proposal.noVotes) > voteQuota
   ) {
     proposal.votePassed = true;
   } else {
