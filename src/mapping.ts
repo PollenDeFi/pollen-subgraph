@@ -73,7 +73,10 @@ export function handleSubmitted(event: Submitted): void {
     snapshot.pollenSupply,
     contract.getQuorum().toBigDecimal()
   );
-  if (proposal.yesVotes > proposal.noVotes && proposal.yesVotes >= voteQuota) {
+  if (
+    proposal.yesVotes > proposal.noVotes &&
+    proposal.yesVotes.plus(proposal.noVotes) >= voteQuota
+  ) {
     proposal.votePassed = true;
   } else {
     proposal.votePassed = false;
@@ -102,7 +105,10 @@ export function handleVotedOn(event: VotedOn): void {
     snapshot.pollenSupply,
     contract.getQuorum().toBigDecimal()
   );
-  if (proposal.yesVotes > proposal.noVotes && proposal.yesVotes >= voteQuota) {
+  if (
+    proposal.yesVotes > proposal.noVotes &&
+    proposal.yesVotes.plus(proposal.noVotes) >= voteQuota
+  ) {
     proposal.votePassed = true;
   } else {
     proposal.votePassed = false;
