@@ -170,177 +170,6 @@ export class PollenToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  balanceOfAt(account: Address, snapshotId: BigInt): BigInt {
-    let result = super.call(
-      "balanceOfAt",
-      "balanceOfAt(address,uint256):(uint256)",
-      [
-        ethereum.Value.fromAddress(account),
-        ethereum.Value.fromUnsignedBigInt(snapshotId)
-      ]
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_balanceOfAt(
-    account: Address,
-    snapshotId: BigInt
-  ): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "balanceOfAt",
-      "balanceOfAt(address,uint256):(uint256)",
-      [
-        ethereum.Value.fromAddress(account),
-        ethereum.Value.fromUnsignedBigInt(snapshotId)
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  decimals(): i32 {
-    let result = super.call("decimals", "decimals():(uint8)", []);
-
-    return result[0].toI32();
-  }
-
-  try_decimals(): ethereum.CallResult<i32> {
-    let result = super.tryCall("decimals", "decimals():(uint8)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toI32());
-  }
-
-  decreaseAllowance(spender: Address, subtractedValue: BigInt): boolean {
-    let result = super.call(
-      "decreaseAllowance",
-      "decreaseAllowance(address,uint256):(bool)",
-      [
-        ethereum.Value.fromAddress(spender),
-        ethereum.Value.fromUnsignedBigInt(subtractedValue)
-      ]
-    );
-
-    return result[0].toBoolean();
-  }
-
-  try_decreaseAllowance(
-    spender: Address,
-    subtractedValue: BigInt
-  ): ethereum.CallResult<boolean> {
-    let result = super.tryCall(
-      "decreaseAllowance",
-      "decreaseAllowance(address,uint256):(bool)",
-      [
-        ethereum.Value.fromAddress(spender),
-        ethereum.Value.fromUnsignedBigInt(subtractedValue)
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  increaseAllowance(spender: Address, addedValue: BigInt): boolean {
-    let result = super.call(
-      "increaseAllowance",
-      "increaseAllowance(address,uint256):(bool)",
-      [
-        ethereum.Value.fromAddress(spender),
-        ethereum.Value.fromUnsignedBigInt(addedValue)
-      ]
-    );
-
-    return result[0].toBoolean();
-  }
-
-  try_increaseAllowance(
-    spender: Address,
-    addedValue: BigInt
-  ): ethereum.CallResult<boolean> {
-    let result = super.tryCall(
-      "increaseAllowance",
-      "increaseAllowance(address,uint256):(bool)",
-      [
-        ethereum.Value.fromAddress(spender),
-        ethereum.Value.fromUnsignedBigInt(addedValue)
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  isOwner(): boolean {
-    let result = super.call("isOwner", "isOwner():(bool)", []);
-
-    return result[0].toBoolean();
-  }
-
-  try_isOwner(): ethereum.CallResult<boolean> {
-    let result = super.tryCall("isOwner", "isOwner():(bool)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  name(): string {
-    let result = super.call("name", "name():(string)", []);
-
-    return result[0].toString();
-  }
-
-  try_name(): ethereum.CallResult<string> {
-    let result = super.tryCall("name", "name():(string)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  owner(): Address {
-    let result = super.call("owner", "owner():(address)", []);
-
-    return result[0].toAddress();
-  }
-
-  try_owner(): ethereum.CallResult<Address> {
-    let result = super.tryCall("owner", "owner():(address)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  symbol(): string {
-    let result = super.call("symbol", "symbol():(string)", []);
-
-    return result[0].toString();
-  }
-
-  try_symbol(): ethereum.CallResult<string> {
-    let result = super.tryCall("symbol", "symbol():(string)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
   totalSupply(): BigInt {
     let result = super.call("totalSupply", "totalSupply():(uint256)", []);
 
@@ -349,29 +178,6 @@ export class PollenToken extends ethereum.SmartContract {
 
   try_totalSupply(): ethereum.CallResult<BigInt> {
     let result = super.tryCall("totalSupply", "totalSupply():(uint256)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  totalSupplyAt(snapshotId: BigInt): BigInt {
-    let result = super.call(
-      "totalSupplyAt",
-      "totalSupplyAt(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(snapshotId)]
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_totalSupplyAt(snapshotId: BigInt): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "totalSupplyAt",
-      "totalSupplyAt(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(snapshotId)]
-    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -452,31 +258,75 @@ export class PollenToken extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
-}
 
-export class ConstructorCall extends ethereum.Call {
-  get inputs(): ConstructorCall__Inputs {
-    return new ConstructorCall__Inputs(this);
+  balanceOfAt(account: Address, snapshotId: BigInt): BigInt {
+    let result = super.call(
+      "balanceOfAt",
+      "balanceOfAt(address,uint256):(uint256)",
+      [
+        ethereum.Value.fromAddress(account),
+        ethereum.Value.fromUnsignedBigInt(snapshotId)
+      ]
+    );
+
+    return result[0].toBigInt();
   }
 
-  get outputs(): ConstructorCall__Outputs {
-    return new ConstructorCall__Outputs(this);
+  try_balanceOfAt(
+    account: Address,
+    snapshotId: BigInt
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "balanceOfAt",
+      "balanceOfAt(address,uint256):(uint256)",
+      [
+        ethereum.Value.fromAddress(account),
+        ethereum.Value.fromUnsignedBigInt(snapshotId)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
-}
 
-export class ConstructorCall__Inputs {
-  _call: ConstructorCall;
+  totalSupplyAt(snapshotId: BigInt): BigInt {
+    let result = super.call(
+      "totalSupplyAt",
+      "totalSupplyAt(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(snapshotId)]
+    );
 
-  constructor(call: ConstructorCall) {
-    this._call = call;
+    return result[0].toBigInt();
   }
-}
 
-export class ConstructorCall__Outputs {
-  _call: ConstructorCall;
+  try_totalSupplyAt(snapshotId: BigInt): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "totalSupplyAt",
+      "totalSupplyAt(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(snapshotId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
 
-  constructor(call: ConstructorCall) {
-    this._call = call;
+  owner(): Address {
+    let result = super.call("owner", "owner():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_owner(): ethereum.CallResult<Address> {
+    let result = super.tryCall("owner", "owner():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 }
 
@@ -515,108 +365,6 @@ export class ApproveCall__Outputs {
 
   get value0(): boolean {
     return this._call.outputValues[0].value.toBoolean();
-  }
-}
-
-export class DecreaseAllowanceCall extends ethereum.Call {
-  get inputs(): DecreaseAllowanceCall__Inputs {
-    return new DecreaseAllowanceCall__Inputs(this);
-  }
-
-  get outputs(): DecreaseAllowanceCall__Outputs {
-    return new DecreaseAllowanceCall__Outputs(this);
-  }
-}
-
-export class DecreaseAllowanceCall__Inputs {
-  _call: DecreaseAllowanceCall;
-
-  constructor(call: DecreaseAllowanceCall) {
-    this._call = call;
-  }
-
-  get spender(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get subtractedValue(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-}
-
-export class DecreaseAllowanceCall__Outputs {
-  _call: DecreaseAllowanceCall;
-
-  constructor(call: DecreaseAllowanceCall) {
-    this._call = call;
-  }
-
-  get value0(): boolean {
-    return this._call.outputValues[0].value.toBoolean();
-  }
-}
-
-export class IncreaseAllowanceCall extends ethereum.Call {
-  get inputs(): IncreaseAllowanceCall__Inputs {
-    return new IncreaseAllowanceCall__Inputs(this);
-  }
-
-  get outputs(): IncreaseAllowanceCall__Outputs {
-    return new IncreaseAllowanceCall__Outputs(this);
-  }
-}
-
-export class IncreaseAllowanceCall__Inputs {
-  _call: IncreaseAllowanceCall;
-
-  constructor(call: IncreaseAllowanceCall) {
-    this._call = call;
-  }
-
-  get spender(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get addedValue(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-}
-
-export class IncreaseAllowanceCall__Outputs {
-  _call: IncreaseAllowanceCall;
-
-  constructor(call: IncreaseAllowanceCall) {
-    this._call = call;
-  }
-
-  get value0(): boolean {
-    return this._call.outputValues[0].value.toBoolean();
-  }
-}
-
-export class RenounceOwnershipCall extends ethereum.Call {
-  get inputs(): RenounceOwnershipCall__Inputs {
-    return new RenounceOwnershipCall__Inputs(this);
-  }
-
-  get outputs(): RenounceOwnershipCall__Outputs {
-    return new RenounceOwnershipCall__Outputs(this);
-  }
-}
-
-export class RenounceOwnershipCall__Inputs {
-  _call: RenounceOwnershipCall;
-
-  constructor(call: RenounceOwnershipCall) {
-    this._call = call;
-  }
-}
-
-export class RenounceOwnershipCall__Outputs {
-  _call: RenounceOwnershipCall;
-
-  constructor(call: RenounceOwnershipCall) {
-    this._call = call;
   }
 }
 
@@ -700,32 +448,28 @@ export class TransferFromCall__Outputs {
   }
 }
 
-export class TransferOwnershipCall extends ethereum.Call {
-  get inputs(): TransferOwnershipCall__Inputs {
-    return new TransferOwnershipCall__Inputs(this);
+export class InitializeCall extends ethereum.Call {
+  get inputs(): InitializeCall__Inputs {
+    return new InitializeCall__Inputs(this);
   }
 
-  get outputs(): TransferOwnershipCall__Outputs {
-    return new TransferOwnershipCall__Outputs(this);
+  get outputs(): InitializeCall__Outputs {
+    return new InitializeCall__Outputs(this);
   }
 }
 
-export class TransferOwnershipCall__Inputs {
-  _call: TransferOwnershipCall;
+export class InitializeCall__Inputs {
+  _call: InitializeCall;
 
-  constructor(call: TransferOwnershipCall) {
+  constructor(call: InitializeCall) {
     this._call = call;
   }
-
-  get newOwner(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
 }
 
-export class TransferOwnershipCall__Outputs {
-  _call: TransferOwnershipCall;
+export class InitializeCall__Outputs {
+  _call: InitializeCall;
 
-  constructor(call: TransferOwnershipCall) {
+  constructor(call: InitializeCall) {
     this._call = call;
   }
 }
@@ -760,6 +504,36 @@ export class MintCall__Outputs {
   }
 }
 
+export class BurnCall extends ethereum.Call {
+  get inputs(): BurnCall__Inputs {
+    return new BurnCall__Inputs(this);
+  }
+
+  get outputs(): BurnCall__Outputs {
+    return new BurnCall__Outputs(this);
+  }
+}
+
+export class BurnCall__Inputs {
+  _call: BurnCall;
+
+  constructor(call: BurnCall) {
+    this._call = call;
+  }
+
+  get amount(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class BurnCall__Outputs {
+  _call: BurnCall;
+
+  constructor(call: BurnCall) {
+    this._call = call;
+  }
+}
+
 export class SnapshotCall extends ethereum.Call {
   get inputs(): SnapshotCall__Inputs {
     return new SnapshotCall__Inputs(this);
@@ -787,5 +561,61 @@ export class SnapshotCall__Outputs {
 
   get value0(): BigInt {
     return this._call.outputValues[0].value.toBigInt();
+  }
+}
+
+export class TransferOwnershipCall extends ethereum.Call {
+  get inputs(): TransferOwnershipCall__Inputs {
+    return new TransferOwnershipCall__Inputs(this);
+  }
+
+  get outputs(): TransferOwnershipCall__Outputs {
+    return new TransferOwnershipCall__Outputs(this);
+  }
+}
+
+export class TransferOwnershipCall__Inputs {
+  _call: TransferOwnershipCall;
+
+  constructor(call: TransferOwnershipCall) {
+    this._call = call;
+  }
+
+  get newOwner(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class TransferOwnershipCall__Outputs {
+  _call: TransferOwnershipCall;
+
+  constructor(call: TransferOwnershipCall) {
+    this._call = call;
+  }
+}
+
+export class RenounceOwnershipCall extends ethereum.Call {
+  get inputs(): RenounceOwnershipCall__Inputs {
+    return new RenounceOwnershipCall__Inputs(this);
+  }
+
+  get outputs(): RenounceOwnershipCall__Outputs {
+    return new RenounceOwnershipCall__Outputs(this);
+  }
+}
+
+export class RenounceOwnershipCall__Inputs {
+  _call: RenounceOwnershipCall;
+
+  constructor(call: RenounceOwnershipCall) {
+    this._call = call;
+  }
+}
+
+export class RenounceOwnershipCall__Outputs {
+  _call: RenounceOwnershipCall;
+
+  constructor(call: RenounceOwnershipCall) {
+    this._call = call;
   }
 }

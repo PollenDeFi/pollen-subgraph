@@ -196,6 +196,21 @@ export class PollenDAO extends ethereum.SmartContract {
     return new PollenDAO("PollenDAO", address);
   }
 
+  version(): string {
+    let result = super.call("version", "version():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_version(): ethereum.CallResult<string> {
+    let result = super.tryCall("version", "version():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
   getPollenAddress(): Address {
     let result = super.call(
       "getPollenAddress",
@@ -448,48 +463,6 @@ export class PollenDAO extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-}
-
-export class ConstructorCall extends ethereum.Call {
-  get inputs(): ConstructorCall__Inputs {
-    return new ConstructorCall__Inputs(this);
-  }
-
-  get outputs(): ConstructorCall__Outputs {
-    return new ConstructorCall__Outputs(this);
-  }
-}
-
-export class ConstructorCall__Inputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
-  }
-
-  get quorum(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get votingExpiryDelay(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-
-  get executionOpenDelay(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
-  }
-
-  get executionExpiryDelay(): BigInt {
-    return this._call.inputValues[3].value.toBigInt();
-  }
-}
-
-export class ConstructorCall__Outputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
   }
 }
 
