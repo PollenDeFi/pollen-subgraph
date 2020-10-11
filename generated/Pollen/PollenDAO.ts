@@ -26,6 +26,54 @@ export class Executed__Params {
   get proposalId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
   }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
+export class NewOwner extends ethereum.Event {
+  get params(): NewOwner__Params {
+    return new NewOwner__Params(this);
+  }
+}
+
+export class NewOwner__Params {
+  _event: NewOwner;
+
+  constructor(event: NewOwner) {
+    this._event = event;
+  }
+
+  get newOwner(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get oldOwner(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
+export class NewPriceQuoter extends ethereum.Event {
+  get params(): NewPriceQuoter__Params {
+    return new NewPriceQuoter__Params(this);
+  }
+}
+
+export class NewPriceQuoter__Params {
+  _event: NewPriceQuoter;
+
+  constructor(event: NewPriceQuoter) {
+    this._event = event;
+  }
+
+  get newQuoter(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get oldQuoter(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
 }
 
 export class Redeemed extends ethereum.Event {
@@ -103,6 +151,42 @@ export class VotedOn__Params {
 
   get vote(): boolean {
     return this._event.parameters[2].value.toBoolean();
+  }
+}
+
+export class assetAdded extends ethereum.Event {
+  get params(): assetAdded__Params {
+    return new assetAdded__Params(this);
+  }
+}
+
+export class assetAdded__Params {
+  _event: assetAdded;
+
+  constructor(event: assetAdded) {
+    this._event = event;
+  }
+
+  get asset(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
+export class assetRemoved extends ethereum.Event {
+  get params(): assetRemoved__Params {
+    return new assetRemoved__Params(this);
+  }
+}
+
+export class assetRemoved__Params {
+  _event: assetRemoved;
+
+  constructor(event: assetRemoved) {
+    this._event = event;
+  }
+
+  get asset(): Address {
+    return this._event.parameters[0].value.toAddress();
   }
 }
 
@@ -606,6 +690,168 @@ export class RedeemCall__Outputs {
   _call: RedeemCall;
 
   constructor(call: RedeemCall) {
+    this._call = call;
+  }
+}
+
+export class AddAssetCall extends ethereum.Call {
+  get inputs(): AddAssetCall__Inputs {
+    return new AddAssetCall__Inputs(this);
+  }
+
+  get outputs(): AddAssetCall__Outputs {
+    return new AddAssetCall__Outputs(this);
+  }
+}
+
+export class AddAssetCall__Inputs {
+  _call: AddAssetCall;
+
+  constructor(call: AddAssetCall) {
+    this._call = call;
+  }
+
+  get asset(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class AddAssetCall__Outputs {
+  _call: AddAssetCall;
+
+  constructor(call: AddAssetCall) {
+    this._call = call;
+  }
+}
+
+export class RemoveAssetCall extends ethereum.Call {
+  get inputs(): RemoveAssetCall__Inputs {
+    return new RemoveAssetCall__Inputs(this);
+  }
+
+  get outputs(): RemoveAssetCall__Outputs {
+    return new RemoveAssetCall__Outputs(this);
+  }
+}
+
+export class RemoveAssetCall__Inputs {
+  _call: RemoveAssetCall;
+
+  constructor(call: RemoveAssetCall) {
+    this._call = call;
+  }
+
+  get asset(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class RemoveAssetCall__Outputs {
+  _call: RemoveAssetCall;
+
+  constructor(call: RemoveAssetCall) {
+    this._call = call;
+  }
+}
+
+export class SetOwnerCall extends ethereum.Call {
+  get inputs(): SetOwnerCall__Inputs {
+    return new SetOwnerCall__Inputs(this);
+  }
+
+  get outputs(): SetOwnerCall__Outputs {
+    return new SetOwnerCall__Outputs(this);
+  }
+}
+
+export class SetOwnerCall__Inputs {
+  _call: SetOwnerCall;
+
+  constructor(call: SetOwnerCall) {
+    this._call = call;
+  }
+
+  get newOwner(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetOwnerCall__Outputs {
+  _call: SetOwnerCall;
+
+  constructor(call: SetOwnerCall) {
+    this._call = call;
+  }
+}
+
+export class SetParamsCall extends ethereum.Call {
+  get inputs(): SetParamsCall__Inputs {
+    return new SetParamsCall__Inputs(this);
+  }
+
+  get outputs(): SetParamsCall__Outputs {
+    return new SetParamsCall__Outputs(this);
+  }
+}
+
+export class SetParamsCall__Inputs {
+  _call: SetParamsCall;
+
+  constructor(call: SetParamsCall) {
+    this._call = call;
+  }
+
+  get quorum(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get votingExpiryDelay(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get executionOpenDelay(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+
+  get executionExpiryDelay(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
+  }
+}
+
+export class SetParamsCall__Outputs {
+  _call: SetParamsCall;
+
+  constructor(call: SetParamsCall) {
+    this._call = call;
+  }
+}
+
+export class SetPriceQuoterCall extends ethereum.Call {
+  get inputs(): SetPriceQuoterCall__Inputs {
+    return new SetPriceQuoterCall__Inputs(this);
+  }
+
+  get outputs(): SetPriceQuoterCall__Outputs {
+    return new SetPriceQuoterCall__Outputs(this);
+  }
+}
+
+export class SetPriceQuoterCall__Inputs {
+  _call: SetPriceQuoterCall;
+
+  constructor(call: SetPriceQuoterCall) {
+    this._call = call;
+  }
+
+  get newQuoter(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetPriceQuoterCall__Outputs {
+  _call: SetPriceQuoterCall;
+
+  constructor(call: SetPriceQuoterCall) {
     this._call = call;
   }
 }

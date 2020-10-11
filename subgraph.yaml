@@ -24,7 +24,7 @@ dataSources:
         - name: GenericERC20
           file: ./artifacts/contracts/ERC20UpgradeSafe.json
       eventHandlers:
-        - event: Executed(uint256)
+        - event: Executed(uint256,uint256)
           handler: handleExecuted
         - event: Redeemed(address,uint256)
           handler: handleRedeemed

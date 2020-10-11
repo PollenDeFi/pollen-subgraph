@@ -91,6 +91,17 @@ export function handleSubmitted(event: Submitted): void {
     chainProposalTimeStamps.value2
   );
   proposal.save();
+  // TODO: refactor adding to portfolio
+  let portfolio = Portfolio.load(portfolioId);
+  if (portfolio == null) {
+    portfolio = new Portfolio(portfolioId);
+  }
+  // @ts-ignore
+  portfolio.contract = event.address;
+  if (!portfolio.assets.includes(assetToken.id)) {
+    portfolio.assets = portfolio.assets.concat([assetToken.id]);
+  }
+  portfolio.save();
 }
 
 export function handleVotedOn(event: VotedOn): void {
