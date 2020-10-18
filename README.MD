@@ -1,4 +1,4 @@
-# Pollen Subgraph {
+# Pollen Subgraph
 The cache/data translation layer for Pollen.
 URL: https://thegraph.com/explorer/subgraph/pollendefi/pollen
 
@@ -24,4 +24,3 @@ Deploy subgraph after authenticating using: `graph auth https://api.thegraph.com
 
 TBA (plan is to move to an open-source license)
 
-# }
