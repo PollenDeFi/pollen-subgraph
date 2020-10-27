@@ -20,8 +20,3 @@ Check that code is safe (including mappings)
 Deploy subgraph after authenticating using: `graph auth https://api.thegraph.com/deploy/ <YOUR_TOKEN>`
 
 `$ yarn deploy`
-
-## License
-
-TBA (plan is to move to an open-source license)
-
