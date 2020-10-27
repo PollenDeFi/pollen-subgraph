@@ -1,3 +1,4 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 # Pollen Subgraph
 The cache/data translation layer for Pollen.
 
