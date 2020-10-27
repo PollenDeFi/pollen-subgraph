@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 # Pollen Subgraph
-The cache/data translation layer for Pollen.
+The Ethereum data caching/translation layer for Pollen.
 
 URL: https://thegraph.com/explorer/subgraph/pollendefi/pollen
 
