@@ -1,6 +1,7 @@
 import { BigInt, ipfs, Address, BigDecimal } from "@graphprotocol/graph-ts";
 import {
   PollenDAO,
+  assetAdded,
   Executed,
   Redeemed,
   Submitted,
@@ -21,6 +22,34 @@ import {
 } from "./helpers";
 
 const portfolioId = "0";
+
+export function handleAssetAdded(event: assetAdded): void {
+  let assetToken = AssetToken.load(event.params.asset.toHexString());
+  if (assetToken == null) {
+    assetToken = new AssetToken(event.params.asset.toHexString());
+  }
+  let assetContract = GenericERC20.bind(Address.fromString(assetToken.id));
+  assetToken.name = assetContract.name();
+  assetToken.symbol = assetContract.symbol();
+  // TODO: refactor types and include into addAsset event
+  assetToken.type = TokenType.ERC20;
+  assetToken.daoBalance = convertEthToDecimal(
+    // @ts-ignore
+    assetContract.balanceOf(event.address)
+  );
+  assetToken.save();
+
+  let portfolio = Portfolio.load(portfolioId);
+  if (portfolio == null) {
+    portfolio = new Portfolio(portfolioId);
+  }
+  // @ts-ignore
+  portfolio.contract = event.address;
+  if (!portfolio.assets.includes(assetToken.id)) {
+    portfolio.assets = portfolio.assets.concat([assetToken.id]);
+  }
+  portfolio.save();
+}
 
 export function handleSubmitted(event: Submitted): void {
   // @ts-ignore
