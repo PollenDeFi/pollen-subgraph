@@ -1,7 +1,7 @@
 import { BigInt, ipfs, Address, BigDecimal } from "@graphprotocol/graph-ts";
 import {
   PollenDAO,
-  assetAdded,
+  AssetAdded,
   Executed,
   Redeemed,
   Submitted,
@@ -23,7 +23,7 @@ import {
 
 const portfolioId = "0";
 
-export function handleAssetAdded(event: assetAdded): void {
+export function handleAssetAdded(event: AssetAdded): void {
   let assetToken = AssetToken.load(event.params.asset.toHexString());
   if (assetToken == null) {
     assetToken = new AssetToken(event.params.asset.toHexString());

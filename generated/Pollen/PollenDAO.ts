@@ -10,6 +10,42 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class AssetAdded extends ethereum.Event {
+  get params(): AssetAdded__Params {
+    return new AssetAdded__Params(this);
+  }
+}
+
+export class AssetAdded__Params {
+  _event: AssetAdded;
+
+  constructor(event: AssetAdded) {
+    this._event = event;
+  }
+
+  get asset(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
+export class AssetRemoved extends ethereum.Event {
+  get params(): AssetRemoved__Params {
+    return new AssetRemoved__Params(this);
+  }
+}
+
+export class AssetRemoved__Params {
+  _event: AssetRemoved;
+
+  constructor(event: AssetRemoved) {
+    this._event = event;
+  }
+
+  get asset(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
 export class Executed extends ethereum.Event {
   get params(): Executed__Params {
     return new Executed__Params(this);
@@ -151,42 +187,6 @@ export class VotedOn__Params {
 
   get vote(): boolean {
     return this._event.parameters[2].value.toBoolean();
-  }
-}
-
-export class assetAdded extends ethereum.Event {
-  get params(): assetAdded__Params {
-    return new assetAdded__Params(this);
-  }
-}
-
-export class assetAdded__Params {
-  _event: assetAdded;
-
-  constructor(event: assetAdded) {
-    this._event = event;
-  }
-
-  get asset(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-}
-
-export class assetRemoved extends ethereum.Event {
-  get params(): assetRemoved__Params {
-    return new assetRemoved__Params(this);
-  }
-}
-
-export class assetRemoved__Params {
-  _event: assetRemoved;
-
-  constructor(event: assetRemoved) {
-    this._event = event;
-  }
-
-  get asset(): Address {
-    return this._event.parameters[0].value.toAddress();
   }
 }
 
