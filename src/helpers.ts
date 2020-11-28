@@ -32,6 +32,12 @@ export class ProposalType {
   static Divest: string = "Divest";
 }
 
+export class RewardType {
+  static ProposalSubmission: string = "ProposalSubmission";
+  static ProposalExecution: string = "ProposalExecution";
+  static CommunityDistribution: string = "CommunityDistribution";
+}
+
 // @ts-ignore
 export function getProposalType(i: u32): string {
   let res: string;
@@ -41,6 +47,23 @@ export function getProposalType(i: u32): string {
       break;
     case 1:
       res = ProposalType.Divest;
+      break;
+  }
+  return res;
+}
+
+// @ts-ignore
+export function getRewardType(i: u32): string {
+  let res: string;
+  switch (i) {
+    case 0:
+      res = RewardType.ProposalSubmission;
+      break;
+    case 1:
+      res = RewardType.ProposalExecution;
+      break;
+    case 2:
+      res = RewardType.CommunityDistribution;
       break;
   }
   return res;

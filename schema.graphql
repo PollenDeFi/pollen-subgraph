@@ -53,3 +53,39 @@ type Portfolio @entity {
   contract: Bytes!
   assets: [AssetToken!]
 }
+
+enum RewardType {
+  ProposalSubmission
+  ProposalExecution
+  CommunityDistribution
+}
+
+type Governance @entity {
+  id: ID!
+  holdings: [GovTokenHoldings!]
+  totalDistributed: BigDecimal!
+  awaitingDistribution: BigDecimal!
+  earnedRewards: [EarnedReward!] 
+  earnableRewards: [EarnableReward!]
+}
+
+type GovTokenHoldings @entity {
+  id: ID! # user address
+  totalDistributed: BigDecimal!
+  awaitingDistribution: BigDecimal!
+}
+
+type EarnedReward @entity {
+  id: ID!
+  receiver: Bytes!
+  amount: BigDecimal!
+  distributed: Boolean!
+  type: RewardType!
+  earnedAt: BigInt! # Timestamp
+}
+
+type EarnableReward @entity {
+  id: ID!
+  type: RewardType!
+  amount: BigDecimal!
+}

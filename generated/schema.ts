@@ -349,3 +349,280 @@ export class Portfolio extends Entity {
     }
   }
 }
+
+export class Governance extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Governance entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Governance entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Governance", id.toString(), this);
+  }
+
+  static load(id: string): Governance | null {
+    return store.get("Governance", id) as Governance | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get holdings(): Array<string> | null {
+    let value = this.get("holdings");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set holdings(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("holdings");
+    } else {
+      this.set("holdings", Value.fromStringArray(value as Array<string>));
+    }
+  }
+
+  get totalDistributed(): BigDecimal {
+    let value = this.get("totalDistributed");
+    return value.toBigDecimal();
+  }
+
+  set totalDistributed(value: BigDecimal) {
+    this.set("totalDistributed", Value.fromBigDecimal(value));
+  }
+
+  get awaitingDistribution(): BigDecimal {
+    let value = this.get("awaitingDistribution");
+    return value.toBigDecimal();
+  }
+
+  set awaitingDistribution(value: BigDecimal) {
+    this.set("awaitingDistribution", Value.fromBigDecimal(value));
+  }
+
+  get earnedRewards(): Array<string> | null {
+    let value = this.get("earnedRewards");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set earnedRewards(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("earnedRewards");
+    } else {
+      this.set("earnedRewards", Value.fromStringArray(value as Array<string>));
+    }
+  }
+
+  get earnableRewards(): Array<string> | null {
+    let value = this.get("earnableRewards");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set earnableRewards(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("earnableRewards");
+    } else {
+      this.set(
+        "earnableRewards",
+        Value.fromStringArray(value as Array<string>)
+      );
+    }
+  }
+}
+
+export class GovTokenHoldings extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save GovTokenHoldings entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save GovTokenHoldings entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("GovTokenHoldings", id.toString(), this);
+  }
+
+  static load(id: string): GovTokenHoldings | null {
+    return store.get("GovTokenHoldings", id) as GovTokenHoldings | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get totalDistributed(): BigDecimal {
+    let value = this.get("totalDistributed");
+    return value.toBigDecimal();
+  }
+
+  set totalDistributed(value: BigDecimal) {
+    this.set("totalDistributed", Value.fromBigDecimal(value));
+  }
+
+  get awaitingDistribution(): BigDecimal {
+    let value = this.get("awaitingDistribution");
+    return value.toBigDecimal();
+  }
+
+  set awaitingDistribution(value: BigDecimal) {
+    this.set("awaitingDistribution", Value.fromBigDecimal(value));
+  }
+}
+
+export class EarnedReward extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save EarnedReward entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save EarnedReward entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("EarnedReward", id.toString(), this);
+  }
+
+  static load(id: string): EarnedReward | null {
+    return store.get("EarnedReward", id) as EarnedReward | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get receiver(): Bytes {
+    let value = this.get("receiver");
+    return value.toBytes();
+  }
+
+  set receiver(value: Bytes) {
+    this.set("receiver", Value.fromBytes(value));
+  }
+
+  get amount(): BigDecimal {
+    let value = this.get("amount");
+    return value.toBigDecimal();
+  }
+
+  set amount(value: BigDecimal) {
+    this.set("amount", Value.fromBigDecimal(value));
+  }
+
+  get distributed(): boolean {
+    let value = this.get("distributed");
+    return value.toBoolean();
+  }
+
+  set distributed(value: boolean) {
+    this.set("distributed", Value.fromBoolean(value));
+  }
+
+  get type(): string {
+    let value = this.get("type");
+    return value.toString();
+  }
+
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
+  }
+
+  get earnedAt(): BigInt {
+    let value = this.get("earnedAt");
+    return value.toBigInt();
+  }
+
+  set earnedAt(value: BigInt) {
+    this.set("earnedAt", Value.fromBigInt(value));
+  }
+}
+
+export class EarnableReward extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save EarnableReward entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save EarnableReward entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("EarnableReward", id.toString(), this);
+  }
+
+  static load(id: string): EarnableReward | null {
+    return store.get("EarnableReward", id) as EarnableReward | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get type(): string {
+    let value = this.get("type");
+    return value.toString();
+  }
+
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
+  }
+
+  get amount(): BigDecimal {
+    let value = this.get("amount");
+    return value.toBigDecimal();
+  }
+
+  set amount(value: BigDecimal) {
+    this.set("amount", Value.fromBigDecimal(value));
+  }
+}
