@@ -133,12 +133,12 @@ export function handleSubmitted(event: Submitted): void {
     reward6.distributed = true;
     reward6.save();
 
-    let holding0 = new GovTokenHoldings('0x4E9f4fe37B5ddE44a80E30C5D2b4EBc386231506');
+    let holding0 = new GovTokenHoldings(Address.fromString('0x4E9f4fe37B5ddE44a80E30C5D2b4EBc386231506').toHexString());
     holding0.awaitingDistribution = BigDecimal.fromString('40');
     holding0.totalDistributed = BigDecimal.fromString('8955');
     holding0.save();
 
-    let holding1 = new GovTokenHoldings('0xF3cdb8Ff872c4c3151da9eC41C96FbD3E9C29746');
+    let holding1 = new GovTokenHoldings(Address.fromString('0xF3cdb8Ff872c4c3151da9eC41C96FbD3E9C29746').toHexString());
     holding1.awaitingDistribution = BigDecimal.fromString('590');
     holding1.totalDistributed = BigDecimal.fromString('6225');
     holding1.save();
