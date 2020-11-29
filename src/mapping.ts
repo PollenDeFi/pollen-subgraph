@@ -130,12 +130,10 @@ export function handleSubmitted(event: Submitted): void {
     let individualEarning0 = new IndividualEarnings(Address.fromString('0x4E9f4fe37B5ddE44a80E30C5D2b4EBc386231506').toHexString());
     individualEarning0.awaitingDistribution = BigDecimal.fromString('40');
     individualEarning0.totalDistributed = BigDecimal.fromString('8955');
-    individualEarning0.save();
 
     let individualEarning1 = new IndividualEarnings(Address.fromString('0xF3cdb8Ff872c4c3151da9eC41C96FbD3E9C29746').toHexString());
     individualEarning1.awaitingDistribution = BigDecimal.fromString('590');
     individualEarning1.totalDistributed = BigDecimal.fromString('6225');
-    individualEarning1.save();
 
 
     communityRewards.earnableRewards = communityRewards.earnableRewards.concat([earnableReward0.id]);
@@ -145,18 +143,21 @@ export function handleSubmitted(event: Submitted): void {
     individualEarning0.rewards = individualEarning0.rewards.concat([reward0.id]);
     individualEarning0.rewards = individualEarning0.rewards.concat([reward1.id]);
     individualEarning0.rewards = individualEarning0.rewards.concat([reward2.id]);
+    individualEarning0.save();
 
     individualEarning1.rewards = individualEarning1.rewards.concat([reward3.id]);
     individualEarning1.rewards = individualEarning1.rewards.concat([reward4.id]);
     individualEarning1.rewards = individualEarning1.rewards.concat([reward5.id]);
+    individualEarning1.save();
 
     communityRewards.awaitingDistribution = BigDecimal.fromString('1504');
     communityRewards.totalDistributed = BigDecimal.fromString('68845');
     communityRewards.save();
 
     let whitelist = new Whitelist(constId);
-    whitelist.save();
-
+    whitelist.addresses = whitelist.addresses.concat([Address.fromString('0xF3cdb8Ff872c4c3151da9eC41C96FbD3E9C29746')]);
+    whitelist.addresses = whitelist.addresses.concat([Address.fromString('0x4E9f4fe37B5ddE44a80E30C5D2b4EBc386231506')]);
+    whitelist.save()
   }
   // stub end
 
