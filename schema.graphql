@@ -60,19 +60,18 @@ enum RewardType {
   CommunityDistribution
 }
 
-type Governance @entity {
+type CommunityRewards @entity {
   id: ID!
-  holdings: [GovTokenHoldings!]
   totalDistributed: BigDecimal!
   awaitingDistribution: BigDecimal!
-  earnedRewards: [EarnedReward!] 
   earnableRewards: [EarnableReward!]
 }
 
-type GovTokenHoldings @entity {
+type IndividualEarnings @entity {
   id: ID! # user address
   totalDistributed: BigDecimal!
   awaitingDistribution: BigDecimal!
+  rewards: [EarnedReward!]
 }
 
 type EarnedReward @entity {

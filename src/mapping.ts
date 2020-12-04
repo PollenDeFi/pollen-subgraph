@@ -14,10 +14,11 @@ import {
   AssetToken,
   Portfolio,
   Snapshot,
-  Governance,
+  CommunityRewards,
   EarnableReward,
   EarnedReward,
-  GovTokenHoldings,
+  Whitelist,
+  IndividualEarnings
 } from "../generated/schema";
 import {
   getProposalType,
@@ -68,7 +69,7 @@ export function handleSubmitted(event: Submitted): void {
   // stub start
   if (!init) {
     init = true;
-    let governance = new Governance(constId);
+    let communityRewards = new CommunityRewards(constId);
 
     let earnableReward0 = new EarnableReward("0");
     earnableReward0.type = getRewardType(0);
@@ -91,7 +92,7 @@ export function handleSubmitted(event: Submitted): void {
     reward0.earnedAt = BigInt.fromI32(1606558701);
     reward0.save();
     let reward1 = new EarnedReward("1");
-    reward1.receiver = Address.fromString('0xF3cdb8Ff872c4c3151da9eC41C96FbD3E9C29746');
+    reward1.receiver = Address.fromString('0x4E9f4fe37B5ddE44a80E30C5D2b4EBc386231506');
     reward1.amount = BigDecimal.fromString('1');
     reward1.type = getRewardType(2);
     reward1.earnedAt = BigInt.fromI32(1606558501);
@@ -105,7 +106,7 @@ export function handleSubmitted(event: Submitted): void {
     reward2.distributed = true;
     reward2.save();
     let reward3 = new EarnedReward("3");
-    reward3.receiver = Address.fromString('0x4E9f4fe37B5ddE44a80E30C5D2b4EBc386231506');
+    reward3.receiver = Address.fromString('0xF3cdb8Ff872c4c3151da9eC41C96FbD3E9C29746');
     reward3.amount = BigDecimal.fromString('10');
     reward3.type = getRewardType(1);
     reward3.earnedAt = BigInt.fromI32(1606548751);
@@ -125,44 +126,38 @@ export function handleSubmitted(event: Submitted): void {
     reward5.earnedAt = BigInt.fromI32(1606548751);
     reward5.distributed = false;
     reward5.save();
-    let reward6 = new EarnedReward("6");
-    reward6.receiver = Address.fromString('0x4E9f4fe37B5ddE44a80E30C5D2b4EBc386231506');
-    reward6.amount = BigDecimal.fromString('1');
-    reward6.type = getRewardType(2);
-    reward6.earnedAt = BigInt.fromI32(1606548751);
-    reward6.distributed = true;
-    reward6.save();
 
-    let holding0 = new GovTokenHoldings(Address.fromString('0x4E9f4fe37B5ddE44a80E30C5D2b4EBc386231506').toHexString());
-    holding0.awaitingDistribution = BigDecimal.fromString('40');
-    holding0.totalDistributed = BigDecimal.fromString('8955');
-    holding0.save();
+    let individualEarning0 = new IndividualEarnings(Address.fromString('0x4E9f4fe37B5ddE44a80E30C5D2b4EBc386231506').toHexString());
+    individualEarning0.awaitingDistribution = BigDecimal.fromString('40');
+    individualEarning0.totalDistributed = BigDecimal.fromString('8955');
 
-    let holding1 = new GovTokenHoldings(Address.fromString('0xF3cdb8Ff872c4c3151da9eC41C96FbD3E9C29746').toHexString());
-    holding1.awaitingDistribution = BigDecimal.fromString('590');
-    holding1.totalDistributed = BigDecimal.fromString('6225');
-    holding1.save();
+    let individualEarning1 = new IndividualEarnings(Address.fromString('0xF3cdb8Ff872c4c3151da9eC41C96FbD3E9C29746').toHexString());
+    individualEarning1.awaitingDistribution = BigDecimal.fromString('590');
+    individualEarning1.totalDistributed = BigDecimal.fromString('6225');
 
 
-    governance.earnableRewards = governance.earnableRewards.concat([earnableReward0.id]);
-    governance.earnableRewards = governance.earnableRewards.concat([earnableReward1.id]);
-    governance.earnableRewards = governance.earnableRewards.concat([earnableReward2.id]);
+    communityRewards.earnableRewards = communityRewards.earnableRewards.concat([earnableReward0.id]);
+    communityRewards.earnableRewards = communityRewards.earnableRewards.concat([earnableReward1.id]);
+    communityRewards.earnableRewards = communityRewards.earnableRewards.concat([earnableReward2.id]);
 
-    governance.earnedRewards = governance.earnedRewards.concat([reward0.id]);
-    governance.earnedRewards = governance.earnedRewards.concat([reward1.id]);
-    governance.earnedRewards = governance.earnedRewards.concat([reward2.id]);
-    governance.earnedRewards = governance.earnedRewards.concat([reward3.id]);
-    governance.earnedRewards = governance.earnedRewards.concat([reward4.id]);
-    governance.earnedRewards = governance.earnedRewards.concat([reward5.id]);
-    governance.earnedRewards = governance.earnedRewards.concat([reward6.id]);
+    individualEarning0.rewards = individualEarning0.rewards.concat([reward0.id]);
+    individualEarning0.rewards = individualEarning0.rewards.concat([reward1.id]);
+    individualEarning0.rewards = individualEarning0.rewards.concat([reward2.id]);
+    individualEarning0.save();
 
-    governance.awaitingDistribution = BigDecimal.fromString('1504');
-    governance.totalDistributed = BigDecimal.fromString('68845');
+    individualEarning1.rewards = individualEarning1.rewards.concat([reward3.id]);
+    individualEarning1.rewards = individualEarning1.rewards.concat([reward4.id]);
+    individualEarning1.rewards = individualEarning1.rewards.concat([reward5.id]);
+    individualEarning1.save();
 
-    governance.holdings = governance.holdings.concat([holding0.id]);
-    governance.holdings = governance.holdings.concat([holding1.id]);
-    
-    governance.save();
+    communityRewards.awaitingDistribution = BigDecimal.fromString('1504');
+    communityRewards.totalDistributed = BigDecimal.fromString('68845');
+    communityRewards.save();
+
+    let whitelist = new Whitelist(constId);
+    whitelist.addresses = whitelist.addresses.concat([Address.fromString('0xF3cdb8Ff872c4c3151da9eC41C96FbD3E9C29746')]);
+    whitelist.addresses = whitelist.addresses.concat([Address.fromString('0x4E9f4fe37B5ddE44a80E30C5D2b4EBc386231506')]);
+    whitelist.save()
   }
   // stub end
 
