@@ -1,4 +1,6 @@
 specVersion: 0.0.2
+description: Pollen is a DAO, a liquidity provider & a DeFi asset pool. It uses human capital and perfectly aligned interests to recalibrate and optimise.
+repository: https://github.com/PollenDeFi/pollen-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
