@@ -76,6 +76,28 @@ export class Snapshot__Params {
   }
 }
 
+export class StemWithdrawal extends ethereum.Event {
+  get params(): StemWithdrawal__Params {
+    return new StemWithdrawal__Params(this);
+  }
+}
+
+export class StemWithdrawal__Params {
+  _event: StemWithdrawal;
+
+  constructor(event: StemWithdrawal) {
+    this._event = event;
+  }
+
+  get wallet(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
 export class Transfer extends ethereum.Event {
   get params(): Transfer__Params {
     return new Transfer__Params(this);
@@ -102,31 +124,49 @@ export class Transfer__Params {
   }
 }
 
-export class Whitelist extends ethereum.Event {
-  get params(): Whitelist__Params {
-    return new Whitelist__Params(this);
+export class VestingPool extends ethereum.Event {
+  get params(): VestingPool__Params {
+    return new VestingPool__Params(this);
   }
 }
 
-export class Whitelist__Params {
-  _event: Whitelist;
+export class VestingPool__Params {
+  _event: VestingPool;
 
-  constructor(event: Whitelist) {
+  constructor(event: VestingPool) {
     this._event = event;
   }
 
-  get addr(): Address {
+  get wallet(): Address {
     return this._event.parameters[0].value.toAddress();
-  }
-
-  get whitelisted(): boolean {
-    return this._event.parameters[1].value.toBoolean();
   }
 }
 
-export class PollenToken extends ethereum.SmartContract {
-  static bind(address: Address): PollenToken {
-    return new PollenToken("PollenToken", address);
+export class StemToken__getVestingPoolParamsResultValue0Struct extends ethereum.Tuple {
+  get isRestricted(): boolean {
+    return this[0].toBoolean();
+  }
+
+  get startBlock(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get endBlock(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get lastVestedBlock(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get perBlockStemScaled(): BigInt {
+    return this[4].toBigInt();
+  }
+}
+
+export class StemToken extends ethereum.SmartContract {
+  static bind(address: Address): StemToken {
+    return new StemToken("StemToken", address);
   }
 
   allowance(owner: Address, spender: Address): BigInt {
@@ -460,25 +500,109 @@ export class PollenToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  isWhitelisted(account: Address): boolean {
-    let result = super.call("isWhitelisted", "isWhitelisted(address):(bool)", [
-      ethereum.Value.fromAddress(account)
-    ]);
+  getVestingPoolParams(
+    wallet: Address
+  ): StemToken__getVestingPoolParamsResultValue0Struct {
+    let result = super.call(
+      "getVestingPoolParams",
+      "getVestingPoolParams(address):((bool,uint32,uint32,uint32,uint128))",
+      [ethereum.Value.fromAddress(wallet)]
+    );
 
-    return result[0].toBoolean();
+    return result[0].toTuple() as StemToken__getVestingPoolParamsResultValue0Struct;
   }
 
-  try_isWhitelisted(account: Address): ethereum.CallResult<boolean> {
+  try_getVestingPoolParams(
+    wallet: Address
+  ): ethereum.CallResult<StemToken__getVestingPoolParamsResultValue0Struct> {
     let result = super.tryCall(
-      "isWhitelisted",
-      "isWhitelisted(address):(bool)",
-      [ethereum.Value.fromAddress(account)]
+      "getVestingPoolParams",
+      "getVestingPoolParams(address):((bool,uint32,uint32,uint32,uint128))",
+      [ethereum.Value.fromAddress(wallet)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
+    return ethereum.CallResult.fromValue(
+      value[0].toTuple() as StemToken__getVestingPoolParamsResultValue0Struct
+    );
+  }
+
+  getPoolPendingStem(wallet: Address): BigInt {
+    let result = super.call(
+      "getPoolPendingStem",
+      "getPoolPendingStem(address):(uint256)",
+      [ethereum.Value.fromAddress(wallet)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getPoolPendingStem(wallet: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getPoolPendingStem",
+      "getPoolPendingStem(address):(uint256)",
+      [ethereum.Value.fromAddress(wallet)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  withdrawPoolStem(wallet: Address): BigInt {
+    let result = super.call(
+      "withdrawPoolStem",
+      "withdrawPoolStem(address):(uint256)",
+      [ethereum.Value.fromAddress(wallet)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_withdrawPoolStem(wallet: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "withdrawPoolStem",
+      "withdrawPoolStem(address):(uint256)",
+      [ethereum.Value.fromAddress(wallet)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+}
+
+export class ConstructorCall extends ethereum.Call {
+  get inputs(): ConstructorCall__Inputs {
+    return new ConstructorCall__Inputs(this);
+  }
+
+  get outputs(): ConstructorCall__Outputs {
+    return new ConstructorCall__Outputs(this);
+  }
+}
+
+export class ConstructorCall__Inputs {
+  _call: ConstructorCall;
+
+  constructor(call: ConstructorCall) {
+    this._call = call;
+  }
+
+  get doPreventUseWithoutProxy(): boolean {
+    return this._call.inputValues[0].value.toBoolean();
+  }
+}
+
+export class ConstructorCall__Outputs {
+  _call: ConstructorCall;
+
+  constructor(call: ConstructorCall) {
+    this._call = call;
   }
 }
 
@@ -873,12 +997,20 @@ export class InitializeCall__Inputs {
     this._call = call;
   }
 
-  get name(): string {
-    return this._call.inputValues[0].value.toString();
+  get foundationWallet(): Address {
+    return this._call.inputValues[0].value.toAddress();
   }
 
-  get symbol(): string {
-    return this._call.inputValues[1].value.toString();
+  get reserveWallet(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+
+  get foundersWallet(): Address {
+    return this._call.inputValues[2].value.toAddress();
+  }
+
+  get marketWallet(): Address {
+    return this._call.inputValues[3].value.toAddress();
   }
 }
 
@@ -890,36 +1022,36 @@ export class InitializeCall__Outputs {
   }
 }
 
-export class UpdateWhitelistCall extends ethereum.Call {
-  get inputs(): UpdateWhitelistCall__Inputs {
-    return new UpdateWhitelistCall__Inputs(this);
+export class WithdrawPoolStemCall extends ethereum.Call {
+  get inputs(): WithdrawPoolStemCall__Inputs {
+    return new WithdrawPoolStemCall__Inputs(this);
   }
 
-  get outputs(): UpdateWhitelistCall__Outputs {
-    return new UpdateWhitelistCall__Outputs(this);
-  }
-}
-
-export class UpdateWhitelistCall__Inputs {
-  _call: UpdateWhitelistCall;
-
-  constructor(call: UpdateWhitelistCall) {
-    this._call = call;
-  }
-
-  get accounts(): Array<Address> {
-    return this._call.inputValues[0].value.toAddressArray();
-  }
-
-  get whitelisted(): boolean {
-    return this._call.inputValues[1].value.toBoolean();
+  get outputs(): WithdrawPoolStemCall__Outputs {
+    return new WithdrawPoolStemCall__Outputs(this);
   }
 }
 
-export class UpdateWhitelistCall__Outputs {
-  _call: UpdateWhitelistCall;
+export class WithdrawPoolStemCall__Inputs {
+  _call: WithdrawPoolStemCall;
 
-  constructor(call: UpdateWhitelistCall) {
+  constructor(call: WithdrawPoolStemCall) {
     this._call = call;
+  }
+
+  get wallet(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class WithdrawPoolStemCall__Outputs {
+  _call: WithdrawPoolStemCall;
+
+  constructor(call: WithdrawPoolStemCall) {
+    this._call = call;
+  }
+
+  get amount(): BigInt {
+    return this._call.outputValues[0].value.toBigInt();
   }
 }

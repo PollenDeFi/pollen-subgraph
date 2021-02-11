@@ -90,25 +90,47 @@ export class NewOwner__Params {
   }
 }
 
-export class NewPriceQuoter extends ethereum.Event {
-  get params(): NewPriceQuoter__Params {
-    return new NewPriceQuoter__Params(this);
+export class PointsRewarded extends ethereum.Event {
+  get params(): PointsRewarded__Params {
+    return new PointsRewarded__Params(this);
   }
 }
 
-export class NewPriceQuoter__Params {
-  _event: NewPriceQuoter;
+export class PointsRewarded__Params {
+  _event: PointsRewarded;
 
-  constructor(event: NewPriceQuoter) {
+  constructor(event: PointsRewarded) {
     this._event = event;
   }
 
-  get newQuoter(): Address {
+  get member(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get oldQuoter(): Address {
-    return this._event.parameters[1].value.toAddress();
+  get kind(): i32 {
+    return this._event.parameters[1].value.toI32();
+  }
+
+  get points(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
+export class PollenPrice extends ethereum.Event {
+  get params(): PollenPrice__Params {
+    return new PollenPrice__Params(this);
+  }
+}
+
+export class PollenPrice__Params {
+  _event: PollenPrice;
+
+  constructor(event: PollenPrice) {
+    this._event = event;
+  }
+
+  get price(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
   }
 }
 
@@ -131,6 +153,86 @@ export class Redeemed__Params {
 
   get pollenAmount(): BigInt {
     return this._event.parameters[1].value.toBigInt();
+  }
+}
+
+export class RewardParamsUpdated extends ethereum.Event {
+  get params(): RewardParamsUpdated__Params {
+    return new RewardParamsUpdated__Params(this);
+  }
+}
+
+export class RewardParamsUpdated__Params {
+  _event: RewardParamsUpdated;
+
+  constructor(event: RewardParamsUpdated) {
+    this._event = event;
+  }
+}
+
+export class RewardWithdrawal extends ethereum.Event {
+  get params(): RewardWithdrawal__Params {
+    return new RewardWithdrawal__Params(this);
+  }
+}
+
+export class RewardWithdrawal__Params {
+  _event: RewardWithdrawal;
+
+  constructor(event: RewardWithdrawal) {
+    this._event = event;
+  }
+
+  get member(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
+export class StatusChanged extends ethereum.Event {
+  get params(): StatusChanged__Params {
+    return new StatusChanged__Params(this);
+  }
+}
+
+export class StatusChanged__Params {
+  _event: StatusChanged;
+
+  constructor(event: StatusChanged) {
+    this._event = event;
+  }
+
+  get proposalId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get newStatus(): i32 {
+    return this._event.parameters[1].value.toI32();
+  }
+
+  get oldStatus(): i32 {
+    return this._event.parameters[2].value.toI32();
+  }
+}
+
+export class StemAllocation extends ethereum.Event {
+  get params(): StemAllocation__Params {
+    return new StemAllocation__Params(this);
+  }
+}
+
+export class StemAllocation__Params {
+  _event: StemAllocation;
+
+  constructor(event: StemAllocation) {
+    this._event = event;
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
   }
 }
 
@@ -188,33 +290,81 @@ export class VotedOn__Params {
   get vote(): boolean {
     return this._event.parameters[2].value.toBoolean();
   }
+
+  get votes(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
 }
 
-export class PollenDAO__getProposalDataResult {
+export class VotingTermsSwitched extends ethereum.Event {
+  get params(): VotingTermsSwitched__Params {
+    return new VotingTermsSwitched__Params(this);
+  }
+}
+
+export class VotingTermsSwitched__Params {
+  _event: VotingTermsSwitched;
+
+  constructor(event: VotingTermsSwitched) {
+    this._event = event;
+  }
+
+  get termsId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get isEnabled(): boolean {
+    return this._event.parameters[1].value.toBoolean();
+  }
+}
+
+export class PollenDAO__getMemberRewardsResultValue0Struct extends ethereum.Tuple {
+  get lastUpdateBlock(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get points(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get entitled(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get adjustment(): BigInt {
+    return this[3].toBigInt();
+  }
+}
+
+export class PollenDAO__getRewardTotalsResultValue0Struct extends ethereum.Tuple {
+  get lastAccumBlock(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get accStemPerPoint(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get totalPoints(): BigInt {
+    return this[2].toBigInt();
+  }
+}
+
+export class PollenDAO__rewardParamsResult {
   value0: i32;
   value1: i32;
-  value2: Address;
-  value3: BigInt;
-  value4: BigInt;
-  value5: string;
-  value6: Address;
-  value7: BigInt;
-  value8: BigInt;
-  value9: BigInt;
-  value10: i32;
+  value2: i32;
+  value3: i32;
+  value4: i32;
+  value5: BigInt;
 
   constructor(
     value0: i32,
     value1: i32,
-    value2: Address,
-    value3: BigInt,
-    value4: BigInt,
-    value5: string,
-    value6: Address,
-    value7: BigInt,
-    value8: BigInt,
-    value9: BigInt,
-    value10: i32
+    value2: i32,
+    value3: i32,
+    value4: i32,
+    value5: BigInt
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -222,11 +372,6 @@ export class PollenDAO__getProposalDataResult {
     this.value3 = value3;
     this.value4 = value4;
     this.value5 = value5;
-    this.value6 = value6;
-    this.value7 = value7;
-    this.value8 = value8;
-    this.value9 = value9;
-    this.value10 = value10;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
@@ -239,28 +384,109 @@ export class PollenDAO__getProposalDataResult {
       "value1",
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value1))
     );
-    map.set("value2", ethereum.Value.fromAddress(this.value2));
-    map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
-    map.set("value4", ethereum.Value.fromUnsignedBigInt(this.value4));
-    map.set("value5", ethereum.Value.fromString(this.value5));
-    map.set("value6", ethereum.Value.fromAddress(this.value6));
-    map.set("value7", ethereum.Value.fromUnsignedBigInt(this.value7));
-    map.set("value8", ethereum.Value.fromUnsignedBigInt(this.value8));
-    map.set("value9", ethereum.Value.fromUnsignedBigInt(this.value9));
     map.set(
-      "value10",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value10))
+      "value2",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value2))
     );
+    map.set(
+      "value3",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value3))
+    );
+    map.set(
+      "value4",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value4))
+    );
+    map.set("value5", ethereum.Value.fromUnsignedBigInt(this.value5));
     return map;
   }
 }
 
-export class PollenDAO__getProposalTimestampsResult {
-  value0: BigInt;
-  value1: BigInt;
-  value2: BigInt;
+export class PollenDAO__getProposalResultTermsStruct extends ethereum.Tuple {
+  get proposalType(): i32 {
+    return this[0].toI32();
+  }
 
-  constructor(value0: BigInt, value1: BigInt, value2: BigInt) {
+  get orderType(): i32 {
+    return this[1].toI32();
+  }
+
+  get baseCcyType(): i32 {
+    return this[2].toI32();
+  }
+
+  get assetTokenType(): i32 {
+    return this[3].toI32();
+  }
+
+  get votingTermsId(): i32 {
+    return this[4].toI32();
+  }
+
+  get __reserved1(): BigInt {
+    return this[5].toBigInt();
+  }
+
+  get submitter(): Address {
+    return this[6].toAddress();
+  }
+
+  get executor(): Address {
+    return this[7].toAddress();
+  }
+
+  get __reserved2(): BigInt {
+    return this[8].toBigInt();
+  }
+
+  get assetTokenAddress(): Address {
+    return this[9].toAddress();
+  }
+
+  get pollenAmount(): BigInt {
+    return this[10].toBigInt();
+  }
+
+  get assetTokenAmount(): BigInt {
+    return this[11].toBigInt();
+  }
+}
+
+export class PollenDAO__getProposalResultParamsStruct extends ethereum.Tuple {
+  get votingOpen(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get votingExpiry(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get executionOpen(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get executionExpiry(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get snapshotId(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get passVotes(): BigInt {
+    return this[5].toBigInt();
+  }
+}
+
+export class PollenDAO__getProposalResult {
+  value0: PollenDAO__getProposalResultTermsStruct;
+  value1: PollenDAO__getProposalResultParamsStruct;
+  value2: string;
+
+  constructor(
+    value0: PollenDAO__getProposalResultTermsStruct,
+    value1: PollenDAO__getProposalResultParamsStruct,
+    value2: string
+  ) {
     this.value0 = value0;
     this.value1 = value1;
     this.value2 = value2;
@@ -268,16 +494,207 @@ export class PollenDAO__getProposalTimestampsResult {
 
   toMap(): TypedMap<string, ethereum.Value> {
     let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
-    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
-    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
+    map.set("value0", ethereum.Value.fromTuple(this.value0));
+    map.set("value1", ethereum.Value.fromTuple(this.value1));
+    map.set("value2", ethereum.Value.fromString(this.value2));
     return map;
+  }
+}
+
+export class PollenDAO__getProposalStateResultStateStruct extends ethereum.Tuple {
+  get status(): i32 {
+    return this[0].toI32();
+  }
+
+  get yesVotes(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get noVotes(): BigInt {
+    return this[2].toBigInt();
+  }
+}
+
+export class PollenDAO__getVoteDataResultValue0Struct extends ethereum.Tuple {
+  get state(): i32 {
+    return this[0].toI32();
+  }
+
+  get votesNum(): BigInt {
+    return this[1].toBigInt();
+  }
+}
+
+export class PollenDAO__getVotingTermsResultValue0Struct extends ethereum.Tuple {
+  get isEnabled(): boolean {
+    return this[0].toBoolean();
+  }
+
+  get isExclPools(): boolean {
+    return this[1].toBoolean();
+  }
+
+  get quorum(): i32 {
+    return this[2].toI32();
+  }
+
+  get votingExpiryDelay(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get executionOpenDelay(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get executionExpiryDelay(): BigInt {
+    return this[5].toBigInt();
   }
 }
 
 export class PollenDAO extends ethereum.SmartContract {
   static bind(address: Address): PollenDAO {
     return new PollenDAO("PollenDAO", address);
+  }
+
+  getMemberPoints(member: Address): BigInt {
+    let result = super.call(
+      "getMemberPoints",
+      "getMemberPoints(address):(uint256)",
+      [ethereum.Value.fromAddress(member)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getMemberPoints(member: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getMemberPoints",
+      "getMemberPoints(address):(uint256)",
+      [ethereum.Value.fromAddress(member)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  getMemberRewards(
+    member: Address
+  ): PollenDAO__getMemberRewardsResultValue0Struct {
+    let result = super.call(
+      "getMemberRewards",
+      "getMemberRewards(address):((uint32,uint64,uint64,uint96))",
+      [ethereum.Value.fromAddress(member)]
+    );
+
+    return result[0].toTuple() as PollenDAO__getMemberRewardsResultValue0Struct;
+  }
+
+  try_getMemberRewards(
+    member: Address
+  ): ethereum.CallResult<PollenDAO__getMemberRewardsResultValue0Struct> {
+    let result = super.tryCall(
+      "getMemberRewards",
+      "getMemberRewards(address):((uint32,uint64,uint64,uint96))",
+      [ethereum.Value.fromAddress(member)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTuple() as PollenDAO__getMemberRewardsResultValue0Struct
+    );
+  }
+
+  getPendingStem(member: Address): BigInt {
+    let result = super.call(
+      "getPendingStem",
+      "getPendingStem(address):(uint256)",
+      [ethereum.Value.fromAddress(member)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getPendingStem(member: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getPendingStem",
+      "getPendingStem(address):(uint256)",
+      [ethereum.Value.fromAddress(member)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  getRewardTotals(): PollenDAO__getRewardTotalsResultValue0Struct {
+    let result = super.call(
+      "getRewardTotals",
+      "getRewardTotals():((uint32,uint112,uint112))",
+      []
+    );
+
+    return result[0].toTuple() as PollenDAO__getRewardTotalsResultValue0Struct;
+  }
+
+  try_getRewardTotals(): ethereum.CallResult<
+    PollenDAO__getRewardTotalsResultValue0Struct
+  > {
+    let result = super.tryCall(
+      "getRewardTotals",
+      "getRewardTotals():((uint32,uint112,uint112))",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTuple() as PollenDAO__getRewardTotalsResultValue0Struct
+    );
+  }
+
+  rewardParams(): PollenDAO__rewardParamsResult {
+    let result = super.call(
+      "rewardParams",
+      "rewardParams():(uint16,uint16,uint16,uint16,uint16,uint176)",
+      []
+    );
+
+    return new PollenDAO__rewardParamsResult(
+      result[0].toI32(),
+      result[1].toI32(),
+      result[2].toI32(),
+      result[3].toI32(),
+      result[4].toI32(),
+      result[5].toBigInt()
+    );
+  }
+
+  try_rewardParams(): ethereum.CallResult<PollenDAO__rewardParamsResult> {
+    let result = super.tryCall(
+      "rewardParams",
+      "rewardParams():(uint16,uint16,uint16,uint16,uint16,uint176)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new PollenDAO__rewardParamsResult(
+        value[0].toI32(),
+        value[1].toI32(),
+        value[2].toI32(),
+        value[3].toI32(),
+        value[4].toI32(),
+        value[5].toBigInt()
+      )
+    );
   }
 
   version(): string {
@@ -318,113 +735,65 @@ export class PollenDAO extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getProposalData(proposalId: BigInt): PollenDAO__getProposalDataResult {
+  getStemAddress(): Address {
+    let result = super.call("getStemAddress", "getStemAddress():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_getStemAddress(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "getStemAddress",
+      "getStemAddress():(address)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  getRateQuoterAddress(): Address {
     let result = super.call(
-      "getProposalData",
-      "getProposalData(uint256):(uint8,uint8,address,uint256,uint256,string,address,uint256,uint256,uint256,uint8)",
-      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+      "getRateQuoterAddress",
+      "getRateQuoterAddress():(address)",
+      []
     );
 
-    return new PollenDAO__getProposalDataResult(
-      result[0].toI32(),
-      result[1].toI32(),
-      result[2].toAddress(),
-      result[3].toBigInt(),
-      result[4].toBigInt(),
-      result[5].toString(),
-      result[6].toAddress(),
-      result[7].toBigInt(),
-      result[8].toBigInt(),
-      result[9].toBigInt(),
-      result[10].toI32()
-    );
+    return result[0].toAddress();
   }
 
-  try_getProposalData(
-    proposalId: BigInt
-  ): ethereum.CallResult<PollenDAO__getProposalDataResult> {
+  try_getRateQuoterAddress(): ethereum.CallResult<Address> {
     let result = super.tryCall(
-      "getProposalData",
-      "getProposalData(uint256):(uint8,uint8,address,uint256,uint256,string,address,uint256,uint256,uint256,uint8)",
-      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+      "getRateQuoterAddress",
+      "getRateQuoterAddress():(address)",
+      []
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new PollenDAO__getProposalDataResult(
-        value[0].toI32(),
-        value[1].toI32(),
-        value[2].toAddress(),
-        value[3].toBigInt(),
-        value[4].toBigInt(),
-        value[5].toString(),
-        value[6].toAddress(),
-        value[7].toBigInt(),
-        value[8].toBigInt(),
-        value[9].toBigInt(),
-        value[10].toI32()
-      )
-    );
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getProposalTimestamps(
-    proposalId: BigInt
-  ): PollenDAO__getProposalTimestampsResult {
-    let result = super.call(
-      "getProposalTimestamps",
-      "getProposalTimestamps(uint256):(uint256,uint256,uint256)",
-      [ethereum.Value.fromUnsignedBigInt(proposalId)]
-    );
+  getPollenPrice(): BigInt {
+    let result = super.call("getPollenPrice", "getPollenPrice():(uint256)", []);
 
-    return new PollenDAO__getProposalTimestampsResult(
-      result[0].toBigInt(),
-      result[1].toBigInt(),
-      result[2].toBigInt()
-    );
+    return result[0].toBigInt();
   }
 
-  try_getProposalTimestamps(
-    proposalId: BigInt
-  ): ethereum.CallResult<PollenDAO__getProposalTimestampsResult> {
+  try_getPollenPrice(): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
-      "getProposalTimestamps",
-      "getProposalTimestamps(uint256):(uint256,uint256,uint256)",
-      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+      "getPollenPrice",
+      "getPollenPrice():(uint256)",
+      []
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new PollenDAO__getProposalTimestampsResult(
-        value[0].toBigInt(),
-        value[1].toBigInt(),
-        value[2].toBigInt()
-      )
-    );
-  }
-
-  getVoterState(proposalId: BigInt): i32 {
-    let result = super.call("getVoterState", "getVoterState(uint256):(uint8)", [
-      ethereum.Value.fromUnsignedBigInt(proposalId)
-    ]);
-
-    return result[0].toI32();
-  }
-
-  try_getVoterState(proposalId: BigInt): ethereum.CallResult<i32> {
-    let result = super.tryCall(
-      "getVoterState",
-      "getVoterState(uint256):(uint8)",
-      [ethereum.Value.fromUnsignedBigInt(proposalId)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toI32());
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   getProposalCount(): BigInt {
@@ -450,6 +819,107 @@ export class PollenDAO extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  getProposal(proposalId: BigInt): PollenDAO__getProposalResult {
+    let result = super.call(
+      "getProposal",
+      "getProposal(uint256):((uint8,uint8,uint8,uint8,uint8,uint64,address,address,uint96,address,uint96,uint256),(uint32,uint32,uint32,uint32,uint32,uint96),string)",
+      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+    );
+
+    return new PollenDAO__getProposalResult(
+      result[0].toTuple() as PollenDAO__getProposalResultTermsStruct,
+      result[1].toTuple() as PollenDAO__getProposalResultParamsStruct,
+      result[2].toString()
+    ) as PollenDAO__getProposalResult;
+  }
+
+  try_getProposal(
+    proposalId: BigInt
+  ): ethereum.CallResult<PollenDAO__getProposalResult> {
+    let result = super.tryCall(
+      "getProposal",
+      "getProposal(uint256):((uint8,uint8,uint8,uint8,uint8,uint64,address,address,uint96,address,uint96,uint256),(uint32,uint32,uint32,uint32,uint32,uint96),string)",
+      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new PollenDAO__getProposalResult(
+        value[0].toTuple() as PollenDAO__getProposalResultTermsStruct,
+        value[1].toTuple() as PollenDAO__getProposalResultParamsStruct,
+        value[2].toString()
+      ) as PollenDAO__getProposalResult
+    );
+  }
+
+  getProposalState(
+    proposalId: BigInt
+  ): PollenDAO__getProposalStateResultStateStruct {
+    let result = super.call(
+      "getProposalState",
+      "getProposalState(uint256):((uint8,uint96,uint96))",
+      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+    );
+
+    return result[0].toTuple() as PollenDAO__getProposalStateResultStateStruct;
+  }
+
+  try_getProposalState(
+    proposalId: BigInt
+  ): ethereum.CallResult<PollenDAO__getProposalStateResultStateStruct> {
+    let result = super.tryCall(
+      "getProposalState",
+      "getProposalState(uint256):((uint8,uint96,uint96))",
+      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTuple() as PollenDAO__getProposalStateResultStateStruct
+    );
+  }
+
+  getVoteData(
+    voter: Address,
+    proposalId: BigInt
+  ): PollenDAO__getVoteDataResultValue0Struct {
+    let result = super.call(
+      "getVoteData",
+      "getVoteData(address,uint256):((uint8,uint96))",
+      [
+        ethereum.Value.fromAddress(voter),
+        ethereum.Value.fromUnsignedBigInt(proposalId)
+      ]
+    );
+
+    return result[0].toTuple() as PollenDAO__getVoteDataResultValue0Struct;
+  }
+
+  try_getVoteData(
+    voter: Address,
+    proposalId: BigInt
+  ): ethereum.CallResult<PollenDAO__getVoteDataResultValue0Struct> {
+    let result = super.tryCall(
+      "getVoteData",
+      "getVoteData(address,uint256):((uint8,uint96))",
+      [
+        ethereum.Value.fromAddress(voter),
+        ethereum.Value.fromUnsignedBigInt(proposalId)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTuple() as PollenDAO__getVoteDataResultValue0Struct
+    );
+  }
+
   getAssets(): Array<Address> {
     let result = super.call("getAssets", "getAssets():(address[])", []);
 
@@ -465,88 +935,117 @@ export class PollenDAO extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddressArray());
   }
 
-  getVotingExpiryDelay(): BigInt {
+  getVotingTerms(termsId: BigInt): PollenDAO__getVotingTermsResultValue0Struct {
     let result = super.call(
-      "getVotingExpiryDelay",
-      "getVotingExpiryDelay():(uint256)",
-      []
+      "getVotingTerms",
+      "getVotingTerms(uint256):((bool,bool,uint8,uint32,uint32,uint32))",
+      [ethereum.Value.fromUnsignedBigInt(termsId)]
     );
 
-    return result[0].toBigInt();
+    return result[0].toTuple() as PollenDAO__getVotingTermsResultValue0Struct;
   }
 
-  try_getVotingExpiryDelay(): ethereum.CallResult<BigInt> {
+  try_getVotingTerms(
+    termsId: BigInt
+  ): ethereum.CallResult<PollenDAO__getVotingTermsResultValue0Struct> {
     let result = super.tryCall(
-      "getVotingExpiryDelay",
-      "getVotingExpiryDelay():(uint256)",
-      []
+      "getVotingTerms",
+      "getVotingTerms(uint256):((bool,bool,uint8,uint32,uint32,uint32))",
+      [ethereum.Value.fromUnsignedBigInt(termsId)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  getExecutionOpenDelay(): BigInt {
-    let result = super.call(
-      "getExecutionOpenDelay",
-      "getExecutionOpenDelay():(uint256)",
-      []
+    return ethereum.CallResult.fromValue(
+      value[0].toTuple() as PollenDAO__getVotingTermsResultValue0Struct
     );
+  }
+}
 
-    return result[0].toBigInt();
+export class WithdrawRewardsCall extends ethereum.Call {
+  get inputs(): WithdrawRewardsCall__Inputs {
+    return new WithdrawRewardsCall__Inputs(this);
   }
 
-  try_getExecutionOpenDelay(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "getExecutionOpenDelay",
-      "getExecutionOpenDelay():(uint256)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  get outputs(): WithdrawRewardsCall__Outputs {
+    return new WithdrawRewardsCall__Outputs(this);
+  }
+}
+
+export class WithdrawRewardsCall__Inputs {
+  _call: WithdrawRewardsCall;
+
+  constructor(call: WithdrawRewardsCall) {
+    this._call = call;
   }
 
-  getExecutionExpiryDelay(): BigInt {
-    let result = super.call(
-      "getExecutionExpiryDelay",
-      "getExecutionExpiryDelay():(uint256)",
-      []
-    );
+  get member(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
 
-    return result[0].toBigInt();
+export class WithdrawRewardsCall__Outputs {
+  _call: WithdrawRewardsCall;
+
+  constructor(call: WithdrawRewardsCall) {
+    this._call = call;
+  }
+}
+
+export class InitializeCall extends ethereum.Call {
+  get inputs(): InitializeCall__Inputs {
+    return new InitializeCall__Inputs(this);
   }
 
-  try_getExecutionExpiryDelay(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "getExecutionExpiryDelay",
-      "getExecutionExpiryDelay():(uint256)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  get outputs(): InitializeCall__Outputs {
+    return new InitializeCall__Outputs(this);
+  }
+}
+
+export class InitializeCall__Inputs {
+  _call: InitializeCall;
+
+  constructor(call: InitializeCall) {
+    this._call = call;
+  }
+}
+
+export class InitializeCall__Outputs {
+  _call: InitializeCall;
+
+  constructor(call: InitializeCall) {
+    this._call = call;
+  }
+}
+
+export class GetPollenPriceCall extends ethereum.Call {
+  get inputs(): GetPollenPriceCall__Inputs {
+    return new GetPollenPriceCall__Inputs(this);
   }
 
-  getQuorum(): BigInt {
-    let result = super.call("getQuorum", "getQuorum():(uint256)", []);
+  get outputs(): GetPollenPriceCall__Outputs {
+    return new GetPollenPriceCall__Outputs(this);
+  }
+}
 
-    return result[0].toBigInt();
+export class GetPollenPriceCall__Inputs {
+  _call: GetPollenPriceCall;
+
+  constructor(call: GetPollenPriceCall) {
+    this._call = call;
+  }
+}
+
+export class GetPollenPriceCall__Outputs {
+  _call: GetPollenPriceCall;
+
+  constructor(call: GetPollenPriceCall) {
+    this._call = call;
   }
 
-  try_getQuorum(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("getQuorum", "getQuorum():(uint256)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  get value0(): BigInt {
+    return this._call.outputValues[0].value.toBigInt();
   }
 }
 
@@ -571,24 +1070,40 @@ export class SubmitCall__Inputs {
     return this._call.inputValues[0].value.toI32();
   }
 
-  get assetTokenType(): i32 {
+  get orderType(): i32 {
     return this._call.inputValues[1].value.toI32();
   }
 
-  get assetTokenAddress(): Address {
-    return this._call.inputValues[2].value.toAddress();
+  get baseCcyType(): i32 {
+    return this._call.inputValues[2].value.toI32();
   }
 
-  get assetTokenAmount(): BigInt {
+  get termsId(): BigInt {
     return this._call.inputValues[3].value.toBigInt();
   }
 
+  get assetTokenType(): i32 {
+    return this._call.inputValues[4].value.toI32();
+  }
+
+  get assetTokenAddress(): Address {
+    return this._call.inputValues[5].value.toAddress();
+  }
+
+  get assetTokenAmount(): BigInt {
+    return this._call.inputValues[6].value.toBigInt();
+  }
+
   get pollenAmount(): BigInt {
-    return this._call.inputValues[4].value.toBigInt();
+    return this._call.inputValues[7].value.toBigInt();
+  }
+
+  get executor(): Address {
+    return this._call.inputValues[8].value.toAddress();
   }
 
   get descriptionCid(): string {
-    return this._call.inputValues[5].value.toString();
+    return this._call.inputValues[9].value.toString();
   }
 }
 
@@ -654,6 +1169,10 @@ export class ExecuteCall__Inputs {
   get proposalId(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
+
+  get data(): Bytes {
+    return this._call.inputValues[1].value.toBytes();
+  }
 }
 
 export class ExecuteCall__Outputs {
@@ -690,6 +1209,92 @@ export class RedeemCall__Outputs {
   _call: RedeemCall;
 
   constructor(call: RedeemCall) {
+    this._call = call;
+  }
+}
+
+export class UpdateProposalStatusCall extends ethereum.Call {
+  get inputs(): UpdateProposalStatusCall__Inputs {
+    return new UpdateProposalStatusCall__Inputs(this);
+  }
+
+  get outputs(): UpdateProposalStatusCall__Outputs {
+    return new UpdateProposalStatusCall__Outputs(this);
+  }
+}
+
+export class UpdateProposalStatusCall__Inputs {
+  _call: UpdateProposalStatusCall;
+
+  constructor(call: UpdateProposalStatusCall) {
+    this._call = call;
+  }
+
+  get proposalId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class UpdateProposalStatusCall__Outputs {
+  _call: UpdateProposalStatusCall;
+
+  constructor(call: UpdateProposalStatusCall) {
+    this._call = call;
+  }
+}
+
+export class UpdateRewardPoolCall extends ethereum.Call {
+  get inputs(): UpdateRewardPoolCall__Inputs {
+    return new UpdateRewardPoolCall__Inputs(this);
+  }
+
+  get outputs(): UpdateRewardPoolCall__Outputs {
+    return new UpdateRewardPoolCall__Outputs(this);
+  }
+}
+
+export class UpdateRewardPoolCall__Inputs {
+  _call: UpdateRewardPoolCall;
+
+  constructor(call: UpdateRewardPoolCall) {
+    this._call = call;
+  }
+}
+
+export class UpdateRewardPoolCall__Outputs {
+  _call: UpdateRewardPoolCall;
+
+  constructor(call: UpdateRewardPoolCall) {
+    this._call = call;
+  }
+}
+
+export class SetOwnerCall extends ethereum.Call {
+  get inputs(): SetOwnerCall__Inputs {
+    return new SetOwnerCall__Inputs(this);
+  }
+
+  get outputs(): SetOwnerCall__Outputs {
+    return new SetOwnerCall__Outputs(this);
+  }
+}
+
+export class SetOwnerCall__Inputs {
+  _call: SetOwnerCall;
+
+  constructor(call: SetOwnerCall) {
+    this._call = call;
+  }
+
+  get newOwner(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetOwnerCall__Outputs {
+  _call: SetOwnerCall;
+
+  constructor(call: SetOwnerCall) {
     this._call = call;
   }
 }
@@ -754,104 +1359,208 @@ export class RemoveAssetCall__Outputs {
   }
 }
 
-export class SetOwnerCall extends ethereum.Call {
-  get inputs(): SetOwnerCall__Inputs {
-    return new SetOwnerCall__Inputs(this);
+export class AddVotingTermsCall extends ethereum.Call {
+  get inputs(): AddVotingTermsCall__Inputs {
+    return new AddVotingTermsCall__Inputs(this);
   }
 
-  get outputs(): SetOwnerCall__Outputs {
-    return new SetOwnerCall__Outputs(this);
+  get outputs(): AddVotingTermsCall__Outputs {
+    return new AddVotingTermsCall__Outputs(this);
   }
 }
 
-export class SetOwnerCall__Inputs {
-  _call: SetOwnerCall;
+export class AddVotingTermsCall__Inputs {
+  _call: AddVotingTermsCall;
 
-  constructor(call: SetOwnerCall) {
+  constructor(call: AddVotingTermsCall) {
     this._call = call;
   }
 
-  get newOwner(): Address {
-    return this._call.inputValues[0].value.toAddress();
+  get terms(): AddVotingTermsCallTermsStruct {
+    return this._call.inputValues[0].value.toTuple() as AddVotingTermsCallTermsStruct;
   }
 }
 
-export class SetOwnerCall__Outputs {
-  _call: SetOwnerCall;
+export class AddVotingTermsCall__Outputs {
+  _call: AddVotingTermsCall;
 
-  constructor(call: SetOwnerCall) {
+  constructor(call: AddVotingTermsCall) {
     this._call = call;
   }
 }
 
-export class SetParamsCall extends ethereum.Call {
-  get inputs(): SetParamsCall__Inputs {
-    return new SetParamsCall__Inputs(this);
+export class AddVotingTermsCallTermsStruct extends ethereum.Tuple {
+  get isEnabled(): boolean {
+    return this[0].toBoolean();
   }
 
-  get outputs(): SetParamsCall__Outputs {
-    return new SetParamsCall__Outputs(this);
-  }
-}
-
-export class SetParamsCall__Inputs {
-  _call: SetParamsCall;
-
-  constructor(call: SetParamsCall) {
-    this._call = call;
+  get isExclPools(): boolean {
+    return this[1].toBoolean();
   }
 
-  get quorum(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
+  get quorum(): i32 {
+    return this[2].toI32();
   }
 
   get votingExpiryDelay(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
+    return this[3].toBigInt();
   }
 
   get executionOpenDelay(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
+    return this[4].toBigInt();
   }
 
   get executionExpiryDelay(): BigInt {
-    return this._call.inputValues[3].value.toBigInt();
+    return this[5].toBigInt();
   }
 }
 
-export class SetParamsCall__Outputs {
-  _call: SetParamsCall;
+export class SwitchVotingTermsCall extends ethereum.Call {
+  get inputs(): SwitchVotingTermsCall__Inputs {
+    return new SwitchVotingTermsCall__Inputs(this);
+  }
 
-  constructor(call: SetParamsCall) {
+  get outputs(): SwitchVotingTermsCall__Outputs {
+    return new SwitchVotingTermsCall__Outputs(this);
+  }
+}
+
+export class SwitchVotingTermsCall__Inputs {
+  _call: SwitchVotingTermsCall;
+
+  constructor(call: SwitchVotingTermsCall) {
+    this._call = call;
+  }
+
+  get termsId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get isEnabled(): boolean {
+    return this._call.inputValues[1].value.toBoolean();
+  }
+}
+
+export class SwitchVotingTermsCall__Outputs {
+  _call: SwitchVotingTermsCall;
+
+  constructor(call: SwitchVotingTermsCall) {
     this._call = call;
   }
 }
 
-export class SetPriceQuoterCall extends ethereum.Call {
-  get inputs(): SetPriceQuoterCall__Inputs {
-    return new SetPriceQuoterCall__Inputs(this);
+export class UpdatePlnWhitelistCall extends ethereum.Call {
+  get inputs(): UpdatePlnWhitelistCall__Inputs {
+    return new UpdatePlnWhitelistCall__Inputs(this);
   }
 
-  get outputs(): SetPriceQuoterCall__Outputs {
-    return new SetPriceQuoterCall__Outputs(this);
+  get outputs(): UpdatePlnWhitelistCall__Outputs {
+    return new UpdatePlnWhitelistCall__Outputs(this);
   }
 }
 
-export class SetPriceQuoterCall__Inputs {
-  _call: SetPriceQuoterCall;
+export class UpdatePlnWhitelistCall__Inputs {
+  _call: UpdatePlnWhitelistCall;
 
-  constructor(call: SetPriceQuoterCall) {
+  constructor(call: UpdatePlnWhitelistCall) {
     this._call = call;
   }
 
-  get newQuoter(): Address {
-    return this._call.inputValues[0].value.toAddress();
+  get accounts(): Array<Address> {
+    return this._call.inputValues[0].value.toAddressArray();
+  }
+
+  get whitelisted(): boolean {
+    return this._call.inputValues[1].value.toBoolean();
   }
 }
 
-export class SetPriceQuoterCall__Outputs {
-  _call: SetPriceQuoterCall;
+export class UpdatePlnWhitelistCall__Outputs {
+  _call: UpdatePlnWhitelistCall;
 
-  constructor(call: SetPriceQuoterCall) {
+  constructor(call: UpdatePlnWhitelistCall) {
+    this._call = call;
+  }
+}
+
+export class UpdateRewardParamsCall extends ethereum.Call {
+  get inputs(): UpdateRewardParamsCall__Inputs {
+    return new UpdateRewardParamsCall__Inputs(this);
+  }
+
+  get outputs(): UpdateRewardParamsCall__Outputs {
+    return new UpdateRewardParamsCall__Outputs(this);
+  }
+}
+
+export class UpdateRewardParamsCall__Inputs {
+  _call: UpdateRewardParamsCall;
+
+  constructor(call: UpdateRewardParamsCall) {
+    this._call = call;
+  }
+
+  get _rewardParams(): UpdateRewardParamsCall_rewardParamsStruct {
+    return this._call.inputValues[0].value.toTuple() as UpdateRewardParamsCall_rewardParamsStruct;
+  }
+}
+
+export class UpdateRewardParamsCall__Outputs {
+  _call: UpdateRewardParamsCall;
+
+  constructor(call: UpdateRewardParamsCall) {
+    this._call = call;
+  }
+}
+
+export class UpdateRewardParamsCall_rewardParamsStruct extends ethereum.Tuple {
+  get forVotingPoints(): i32 {
+    return this[0].toI32();
+  }
+
+  get forProposalPoints(): i32 {
+    return this[1].toI32();
+  }
+
+  get forExecutionPoints(): i32 {
+    return this[2].toI32();
+  }
+
+  get forStateUpdPoints(): i32 {
+    return this[3].toI32();
+  }
+
+  get forPlnDayPoints(): i32 {
+    return this[4].toI32();
+  }
+
+  get __reserved(): BigInt {
+    return this[5].toBigInt();
+  }
+}
+
+export class PreventUseWithoutProxyCall extends ethereum.Call {
+  get inputs(): PreventUseWithoutProxyCall__Inputs {
+    return new PreventUseWithoutProxyCall__Inputs(this);
+  }
+
+  get outputs(): PreventUseWithoutProxyCall__Outputs {
+    return new PreventUseWithoutProxyCall__Outputs(this);
+  }
+}
+
+export class PreventUseWithoutProxyCall__Inputs {
+  _call: PreventUseWithoutProxyCall;
+
+  constructor(call: PreventUseWithoutProxyCall) {
+    this._call = call;
+  }
+}
+
+export class PreventUseWithoutProxyCall__Outputs {
+  _call: PreventUseWithoutProxyCall;
+
+  constructor(call: PreventUseWithoutProxyCall) {
     this._call = call;
   }
 }
