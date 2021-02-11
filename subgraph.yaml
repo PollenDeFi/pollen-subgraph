@@ -8,21 +8,29 @@ dataSources:
     name: Pollen
     network: ropsten
     source:
-      address: "0x58cdDaaCae33f2df3DE8ffe20B07C67ed310aAc6"
+      # ropsten
+      address: '0x5b1d3D9962D3fb2a6f100ffED908075eb960eBaa'
       abi: PollenDAO
-      # TODO: adjust for mainnet
-      startBlock: 8743600
+      startBlock: 9517110
+
+      # mainnet
+      # address: '0x99c0268759d26616AeC761c28336eccd72CCa39A'
+      # abi: PollenDAO
+      # startBlock: 11453721
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
         - Proposal
+        - Member
       abis:
         - name: PollenDAO
-          file: ./artifacts/contracts/IPollenDAO.json
+          file: ./artifacts/contracts/PollenDAO_v1.json
         - name: PollenToken
-          file: ./artifacts/contracts/IPollen.json
+          file: ./artifacts/contracts/Pollen_v1.json
+        - name: StemToken
+          file: ./artifacts/contracts/Stem_v1.json
         - name: GenericERC20
           file: ./artifacts/contracts/ERC20UpgradeSafe.json
       eventHandlers:
@@ -34,6 +42,12 @@ dataSources:
           handler: handleRedeemed
         - event: Submitted(uint256,uint8,address,uint256)
           handler: handleSubmitted
-        - event: VotedOn(uint256,address,bool)
+        - event: VotedOn(uint256,address,bool,uint256)
           handler: handleVotedOn
+        - event: PointsRewarded(indexed address,indexed uint8,uint256)
+          handler: handlePointsRewarded
+        - event: RewardWithdrawal(indexed address,uint256)
+          handler: handleStemWithdrawal
+        - event: VotingTermsSwitched(uint256,bool)
+          handler: handleTermsSwitched
       file: ./src/mapping.ts

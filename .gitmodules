@@ -1,3 +1,4 @@
 [submodule "artifacts"]
 	path = artifacts
 	url = https://github.com/PollenDeFi/pollen-artifacts.git
+

@@ -13,7 +13,36 @@ enum ProposalStatus {
   Null
   Submitted
   Executed
-  Last
+  Rejected
+  Passed
+  Pended
+}
+
+enum BaseCurrency {
+  Asset
+  Pollen
+}
+
+enum OrderType {
+  Limit
+  Market
+}
+
+type ProposalTerm @entity {
+  id: ID!
+  executionExpiryDelay: BigInt!
+  executionOpenDelay: BigInt!
+  isEnabled: Boolean!
+  isExclPools: Boolean!
+  quorum: BigInt!
+  votingExpiryDelay: BigInt!
+}
+
+type Voter @entity {
+  id: ID!
+  address: Bytes!
+  inFavour: Boolean!
+  votes: BigDecimal!
 }
 
 type Proposal @entity {
@@ -33,11 +62,25 @@ type Proposal @entity {
   status: ProposalStatus!
   votePassed: Boolean!
   executedAt: BigInt
+  passVotes: BigDecimal!
+  baseCurrency: BaseCurrency!
+  terms: ProposalTerm!
+  orderType: OrderType!
+  voters: [Voter!]!
 }
 
 type Snapshot @entity {
   id: ID!
   pollenSupply: BigDecimal!
+  stemSupply: BigDecimal!
+  stemEffectiveVoteSupply: BigDecimal!
+}
+
+type CurrentSupply @entity {
+  id: ID!
+  pollen: BigDecimal!
+  stem: BigDecimal!
+  effectiveStem: BigDecimal!
 }
 
 type AssetToken @entity {
@@ -55,30 +98,29 @@ type Portfolio @entity {
 }
 
 enum RewardType {
-  ProposalSubmission
-  ProposalExecution
-  CommunityDistribution
+  ForVoting
+  ForProposalPassed
+  ForExecution
+  ForStateUpdate
+  ForPlnHeld
 }
 
 type CommunityRewards @entity {
   id: ID!
-  totalDistributed: BigDecimal!
-  awaitingDistribution: BigDecimal!
   earnableRewards: [EarnableReward!]
 }
 
-type IndividualEarnings @entity {
+type Member @entity {
   id: ID! # user address
-  totalDistributed: BigDecimal!
-  awaitingDistribution: BigDecimal!
+  totalPoints: BigInt!
+  totalWithdrawn: BigDecimal!
   rewards: [EarnedReward!]
+  withdrawals: [StemWithdrawal!]
 }
 
 type EarnedReward @entity {
   id: ID!
-  receiver: Bytes!
-  amount: BigDecimal!
-  distributed: Boolean!
+  points: BigInt!
   type: RewardType!
   earnedAt: BigInt! # Timestamp
 }
@@ -86,10 +128,12 @@ type EarnedReward @entity {
 type EarnableReward @entity {
   id: ID!
   type: RewardType!
-  amount: BigDecimal!
+  points: BigInt!
 }
 
-type Whitelist @entity {
+type StemWithdrawal @entity {
   id: ID!
-  addresses: [Bytes!]
+  recipient: Bytes!
+  amount: BigDecimal!
+  date: BigInt! # Timestamp
 }

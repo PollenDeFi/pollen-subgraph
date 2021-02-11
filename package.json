@@ -5,10 +5,10 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "auth": "graph auth https://api.thegraph.com/deploy/",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ PollenDeFi/Pollen",
-    "create-local": "graph create --node http://localhost:8020/ PollenDeFi/Pollen",
-    "remove-local": "graph remove --node http://localhost:8020/ PollenDeFi/Pollen",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 PollenDeFi/Pollen",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ PollenDeFi/Sandbox",
+    "create-local": "graph create --node http://localhost:8020/ PollenDeFi/Sandbox",
+    "remove-local": "graph remove --node http://localhost:8020/ PollenDeFi/Sandbox",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 PollenDeFi/Sandbox",
     "fetch-artifacts": "git submodule update --init"
   },
   "dependencies": {
