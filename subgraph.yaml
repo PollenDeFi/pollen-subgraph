@@ -9,7 +9,7 @@ dataSources:
     network: ropsten
     source:
       # ropsten
-      address: '0x5b1d3D9962D3fb2a6f100ffED908075eb960eBaa'
+      address: "0xF752047F904065C71C24200b1E734227aB41be80"
       abi: PollenDAO
       startBlock: 9517110
 
@@ -26,28 +26,84 @@ dataSources:
         - Member
       abis:
         - name: PollenDAO
-          file: ./artifacts/contracts/PollenDAO_v1.json
+          file: ./artifacts/contracts/PollenDAO_v2.json
+        - name: PaiToken
+          file: ./artifacts/contracts/Pai.json
         - name: PollenToken
-          file: ./artifacts/contracts/Pollen_v1.json
-        - name: StemToken
-          file: ./artifacts/contracts/Stem_v1.json
+          file: ./artifacts/contracts/Pollen.json
         - name: GenericERC20
           file: ./artifacts/contracts/ERC20UpgradeSafe.json
       eventHandlers:
         - event: AssetAdded(indexed address)
           handler: handleAssetAdded
-        - event: Executed(uint256,uint256)
-          handler: handleExecuted
-        - event: Redeemed(address,uint256)
-          handler: handleRedeemed
         - event: Submitted(uint256,uint8,address,uint256)
           handler: handleSubmitted
         - event: VotedOn(uint256,address,bool,uint256)
           handler: handleVotedOn
+        - event: VotingTermsSwitched(uint256,bool)
+          handler: handleTermsSwitched
+      file: ./src/mapping.ts
+
+  - kind: ethereum/contract
+    name: PollenPortfolio
+    network: ropsten
+    source:
+      # ropsten
+      address: "0xF752047F904065C71C24200b1E734227aB41be80"
+      abi: PollenPortfolio
+      startBlock: 9517110
+
+      # mainnet
+      # address: '0x99c0268759d26616AeC761c28336eccd72CCa39A'
+      # abi: PollenDAO
+      # startBlock: 11453721
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Proposal
+        - Member
+      abis:
+        - name: PollenPortfolio
+          file: ./artifacts/contracts/PollenPortfolio.json
+        - name: PollenDAO
+          file: ./artifacts/contracts/PollenDAO_v2.json
+      eventHandlers:
+        - event: Executed(uint256,uint256)
+          handler: handleExecuted
+        - event: Redeemed(address,uint256)
+          handler: handleRedeemed
+      file: ./src/mapping.ts
+
+  - kind: ethereum/contract
+    name: PollenGrantor
+    network: ropsten
+    source:
+      # ropsten
+      address: "0xF752047F904065C71C24200b1E734227aB41be80"
+      abi: PollenGrantor
+      startBlock: 9517110
+
+      # mainnet
+      # address: '0x99c0268759d26616AeC761c28336eccd72CCa39A'
+      # abi: PollenDAO
+      # startBlock: 11453721
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Proposal
+        - Member
+      abis:
+        - name: PollenGrantor
+          file: ./artifacts/contracts/PollenGrantor.json
+        - name: PollenDAO
+          file: ./artifacts/contracts/PollenDAO_v2.json
+      eventHandlers:
         - event: PointsRewarded(indexed address,indexed uint8,uint256)
           handler: handlePointsRewarded
         - event: RewardWithdrawal(indexed address,uint256)
-          handler: handleStemWithdrawal
-        - event: VotingTermsSwitched(uint256,bool)
-          handler: handleTermsSwitched
+          handler: handlePollenWithdrawal
       file: ./src/mapping.ts
