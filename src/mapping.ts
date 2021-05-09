@@ -14,7 +14,8 @@ import {
 } from "../generated/Pollen/PollenDAO";
 import {
   Executed,
-  Redeemed
+  Redeemed,
+  PollenPortfolio
 } from "../generated/PollenPortfolio/PollenPortfolio";
 import {
   PointsRewarded,
@@ -142,10 +143,12 @@ export function handleAssetAdded(event: AssetAdded): void {
 export function handleSubmitted(event: Submitted): void {
   // @ts-ignore
   let contract = PollenDAO.bind(event.address);
-  let paiToken = PaiToken.bind(contract.getPaiAddress());
+  // @ts-ignore
+  let pollenPortfolio = PollenPortfolio.bind(event.address);
+  let paiToken = PaiToken.bind(pollenPortfolio.getPaiAddress());
   let pollenToken = PollenToken.bind(contract.getPollenAddress());
   let chainProposal = contract.getProposal(event.params.proposalId);
-  let proposalState = contract.getProposal(event.params.proposalId);
+  let proposalState = contract.getProposal(event.params.proposalId).value2;
 
   let proposal = new Proposal(event.params.proposalId.toString());
   proposal.proposalType = getProposalType(chainProposal.value0.proposalType);
@@ -180,7 +183,7 @@ export function handleSubmitted(event: Submitted): void {
   proposal.orderType = getOrderType(chainProposal.value0.orderType);
   proposal.baseCurrency = getBaseCcyType(chainProposal.value0.baseCcyType);
   proposal.paiAmount = convertEthToDecimal(chainProposal.value0.paiAmount);
-  proposal.description = ipfs.cat(chainProposal.value2).toString();
+  proposal.description = ipfs.cat(chainProposal.value3).toString();
   proposal.submitter = chainProposal.value0.submitter;
 
   let termsId = BigInt.fromI32(chainProposal.value0.votingTermsId);
@@ -295,7 +298,7 @@ export function handleVotedOn(event: VotedOn): void {
   if (proposal != null) {
     // @ts-ignore
     let contract = PollenDAO.bind(event.address);
-    let proposalState = contract.getProposal(event.params.proposalId);
+    let proposalState = contract.getProposal(event.params.proposalId).value2;
     proposal.yesVotes = convertEthToDecimal(proposalState.yesVotes as BigInt);
     proposal.noVotes = convertEthToDecimal(proposalState.noVotes as BigInt);
     proposal.status = getProposalStatus(proposalState.status);
