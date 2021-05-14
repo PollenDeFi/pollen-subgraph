@@ -9,7 +9,7 @@ dataSources:
     network: ropsten
     source:
       # ropsten
-      address: "0xF752047F904065C71C24200b1E734227aB41be80"
+      address: "0x419C191506ec60E91C5a7B3D152ec14A774BB8b7"
       abi: PollenDAO
       startBlock: 9517110
 
@@ -49,7 +49,7 @@ dataSources:
     network: ropsten
     source:
       # ropsten
-      address: "0xF752047F904065C71C24200b1E734227aB41be80"
+      address: "0x419C191506ec60E91C5a7B3D152ec14A774BB8b7"
       abi: PollenPortfolio
       startBlock: 9517110
 
@@ -81,7 +81,7 @@ dataSources:
     network: ropsten
     source:
       # ropsten
-      address: "0xF752047F904065C71C24200b1E734227aB41be80"
+      address: "0x419C191506ec60E91C5a7B3D152ec14A774BB8b7"
       abi: PollenGrantor
       startBlock: 9517110
 
