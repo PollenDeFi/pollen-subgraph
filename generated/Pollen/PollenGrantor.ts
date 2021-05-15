@@ -76,20 +76,6 @@ export class RewardWithdrawal__Params {
   }
 }
 
-export class PollenGrantor__getRewardTotalsResultValue0Struct extends ethereum.Tuple {
-  get lastAccumBlock(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get accPollenPerPoint(): BigInt {
-    return this[1].toBigInt();
-  }
-
-  get totalPoints(): BigInt {
-    return this[2].toBigInt();
-  }
-}
-
 export class PollenGrantor__getMemberRewardsResultValue0Struct extends ethereum.Tuple {
   get lastUpdateBlock(): BigInt {
     return this[0].toBigInt();
@@ -108,101 +94,23 @@ export class PollenGrantor__getMemberRewardsResultValue0Struct extends ethereum.
   }
 }
 
+export class PollenGrantor__getRewardTotalsResultValue0Struct extends ethereum.Tuple {
+  get lastAccumBlock(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get accPollenPerPoint(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get totalPoints(): BigInt {
+    return this[2].toBigInt();
+  }
+}
+
 export class PollenGrantor extends ethereum.SmartContract {
   static bind(address: Address): PollenGrantor {
     return new PollenGrantor("PollenGrantor", address);
-  }
-
-  isPollenUnlocked(): boolean {
-    let result = super.call(
-      "isPollenUnlocked",
-      "isPollenUnlocked():(bool)",
-      []
-    );
-
-    return result[0].toBoolean();
-  }
-
-  try_isPollenUnlocked(): ethereum.CallResult<boolean> {
-    let result = super.tryCall(
-      "isPollenUnlocked",
-      "isPollenUnlocked():(bool)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  lockedPollenAmount(): BigInt {
-    let result = super.call(
-      "lockedPollenAmount",
-      "lockedPollenAmount():(uint88)",
-      []
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_lockedPollenAmount(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "lockedPollenAmount",
-      "lockedPollenAmount():(uint88)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  rewardRates(param0: BigInt): i32 {
-    let result = super.call("rewardRates", "rewardRates(uint256):(uint16)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
-    ]);
-
-    return result[0].toI32();
-  }
-
-  try_rewardRates(param0: BigInt): ethereum.CallResult<i32> {
-    let result = super.tryCall("rewardRates", "rewardRates(uint256):(uint16)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toI32());
-  }
-
-  getRewardTotals(): PollenGrantor__getRewardTotalsResultValue0Struct {
-    let result = super.call(
-      "getRewardTotals",
-      "getRewardTotals():((uint32,uint112,uint112))",
-      []
-    );
-
-    return result[0].toTuple() as PollenGrantor__getRewardTotalsResultValue0Struct;
-  }
-
-  try_getRewardTotals(): ethereum.CallResult<
-    PollenGrantor__getRewardTotalsResultValue0Struct
-  > {
-    let result = super.tryCall(
-      "getRewardTotals",
-      "getRewardTotals():((uint32,uint112,uint112))",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      value[0].toTuple() as PollenGrantor__getRewardTotalsResultValue0Struct
-    );
   }
 
   getMemberRewards(
@@ -256,31 +164,32 @@ export class PollenGrantor extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
-}
 
-export class InitializeGrantorCall extends ethereum.Call {
-  get inputs(): InitializeGrantorCall__Inputs {
-    return new InitializeGrantorCall__Inputs(this);
+  getRewardTotals(): PollenGrantor__getRewardTotalsResultValue0Struct {
+    let result = super.call(
+      "getRewardTotals",
+      "getRewardTotals():((uint32,uint112,uint112))",
+      []
+    );
+
+    return result[0].toTuple() as PollenGrantor__getRewardTotalsResultValue0Struct;
   }
 
-  get outputs(): InitializeGrantorCall__Outputs {
-    return new InitializeGrantorCall__Outputs(this);
-  }
-}
-
-export class InitializeGrantorCall__Inputs {
-  _call: InitializeGrantorCall;
-
-  constructor(call: InitializeGrantorCall) {
-    this._call = call;
-  }
-}
-
-export class InitializeGrantorCall__Outputs {
-  _call: InitializeGrantorCall;
-
-  constructor(call: InitializeGrantorCall) {
-    this._call = call;
+  try_getRewardTotals(): ethereum.CallResult<
+    PollenGrantor__getRewardTotalsResultValue0Struct
+  > {
+    let result = super.tryCall(
+      "getRewardTotals",
+      "getRewardTotals():((uint32,uint112,uint112))",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTuple() as PollenGrantor__getRewardTotalsResultValue0Struct
+    );
   }
 }
 
@@ -412,6 +321,32 @@ export class UpdateRewardPoolCall__Outputs {
   _call: UpdateRewardPoolCall;
 
   constructor(call: UpdateRewardPoolCall) {
+    this._call = call;
+  }
+}
+
+export class InitializeGrantorCall extends ethereum.Call {
+  get inputs(): InitializeGrantorCall__Inputs {
+    return new InitializeGrantorCall__Inputs(this);
+  }
+
+  get outputs(): InitializeGrantorCall__Outputs {
+    return new InitializeGrantorCall__Outputs(this);
+  }
+}
+
+export class InitializeGrantorCall__Inputs {
+  _call: InitializeGrantorCall;
+
+  constructor(call: InitializeGrantorCall) {
+    this._call = call;
+  }
+}
+
+export class InitializeGrantorCall__Outputs {
+  _call: InitializeGrantorCall;
+
+  constructor(call: InitializeGrantorCall) {
     this._call = call;
   }
 }

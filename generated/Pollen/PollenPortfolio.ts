@@ -72,49 +72,6 @@ export class Redeemed__Params {
   }
 }
 
-export class StatusChanged extends ethereum.Event {
-  get params(): StatusChanged__Params {
-    return new StatusChanged__Params(this);
-  }
-}
-
-export class StatusChanged__Params {
-  _event: StatusChanged;
-
-  constructor(event: StatusChanged) {
-    this._event = event;
-  }
-
-  get proposalId(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-
-  get newStatus(): i32 {
-    return this._event.parameters[1].value.toI32();
-  }
-
-  get oldStatus(): i32 {
-    return this._event.parameters[2].value.toI32();
-  }
-}
-
-export class PollenPortfolio__executionsResult {
-  value0: BigInt;
-  value1: BigInt;
-
-  constructor(value0: BigInt, value1: BigInt) {
-    this.value0 = value0;
-    this.value1 = value1;
-  }
-
-  toMap(): TypedMap<string, ethereum.Value> {
-    let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
-    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
-    return map;
-  }
-}
-
 export class PollenPortfolio__getBalancesResult {
   value0: Array<Address>;
   value1: Array<BigInt>;
@@ -135,39 +92,6 @@ export class PollenPortfolio__getBalancesResult {
 export class PollenPortfolio extends ethereum.SmartContract {
   static bind(address: Address): PollenPortfolio {
     return new PollenPortfolio("PollenPortfolio", address);
-  }
-
-  executions(param0: BigInt): PollenPortfolio__executionsResult {
-    let result = super.call(
-      "executions",
-      "executions(uint256):(uint32,uint224)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
-    );
-
-    return new PollenPortfolio__executionsResult(
-      result[0].toBigInt(),
-      result[1].toBigInt()
-    );
-  }
-
-  try_executions(
-    param0: BigInt
-  ): ethereum.CallResult<PollenPortfolio__executionsResult> {
-    let result = super.tryCall(
-      "executions",
-      "executions(uint256):(uint32,uint224)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new PollenPortfolio__executionsResult(
-        value[0].toBigInt(),
-        value[1].toBigInt()
-      )
-    );
   }
 
   getPaiAddress(): Address {

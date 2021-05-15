@@ -10,17 +10,12 @@ import {
   AssetAdded,
   Submitted,
   VotedOn,
-  VotingTermsSwitched
-} from "../generated/Pollen/PollenDAO";
-import {
+  VotingTermsSwitched,
   Executed,
   Redeemed,
-  PollenPortfolio
-} from "../generated/PollenPortfolio/PollenPortfolio";
-import {
   PointsRewarded,
   RewardWithdrawal
-} from "../generated/PollenGrantor/PollenGrantor";
+} from "../generated/Pollen/PollenDAO";
 import { PaiToken } from "../generated/Pollen/PaiToken";
 import { PollenToken } from "../generated/Pollen/PollenToken";
 import { GenericERC20 } from "../generated/Pollen/GenericERC20";
@@ -144,8 +139,7 @@ export function handleSubmitted(event: Submitted): void {
   // @ts-ignore
   let contract = PollenDAO.bind(event.address);
   // @ts-ignore
-  let pollenPortfolio = PollenPortfolio.bind(event.address);
-  let paiToken = PaiToken.bind(pollenPortfolio.getPaiAddress());
+  let paiToken = PaiToken.bind(contract.getPaiAddress());
   let pollenToken = PollenToken.bind(contract.getPollenAddress());
   let chainProposal = contract.getProposal(event.params.proposalId);
   let proposalState = contract.getProposal(event.params.proposalId).value2;
