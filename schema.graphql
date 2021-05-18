@@ -20,7 +20,7 @@ enum ProposalStatus {
 
 enum BaseCurrency {
   Asset
-  Pollen
+  Pai
 }
 
 enum OrderType {
@@ -50,7 +50,7 @@ type Proposal @entity {
   proposalType: ProposalType!
   assetToken: AssetToken!
   assetTokenAmount: BigDecimal!
-  pollenAmount: BigDecimal!
+  paiAmount: BigDecimal!
   description: String!
   submitter: Bytes!
   snapshot: Snapshot!
@@ -71,16 +71,16 @@ type Proposal @entity {
 
 type Snapshot @entity {
   id: ID!
+  paiSupply: BigDecimal!
   pollenSupply: BigDecimal!
-  stemSupply: BigDecimal!
-  stemEffectiveVoteSupply: BigDecimal!
+  pollenEffectiveVoteSupply: BigDecimal!
 }
 
 type CurrentSupply @entity {
   id: ID!
+  pai: BigDecimal!
   pollen: BigDecimal!
-  stem: BigDecimal!
-  effectiveStem: BigDecimal!
+  effectivePollen: BigDecimal!
 }
 
 type AssetToken @entity {
@@ -115,7 +115,7 @@ type Member @entity {
   totalPoints: BigInt!
   totalWithdrawn: BigDecimal!
   rewards: [EarnedReward!]
-  withdrawals: [StemWithdrawal!]
+  withdrawals: [PollenWithdrawal!]
 }
 
 type EarnedReward @entity {
@@ -131,7 +131,7 @@ type EarnableReward @entity {
   points: BigInt!
 }
 
-type StemWithdrawal @entity {
+type PollenWithdrawal @entity {
   id: ID!
   recipient: Bytes!
   amount: BigDecimal!

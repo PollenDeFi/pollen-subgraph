@@ -58,6 +58,28 @@ export class OwnershipTransferred__Params {
   }
 }
 
+export class PollenWithdrawal extends ethereum.Event {
+  get params(): PollenWithdrawal__Params {
+    return new PollenWithdrawal__Params(this);
+  }
+}
+
+export class PollenWithdrawal__Params {
+  _event: PollenWithdrawal;
+
+  constructor(event: PollenWithdrawal) {
+    this._event = event;
+  }
+
+  get wallet(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
 export class Snapshot extends ethereum.Event {
   get params(): Snapshot__Params {
     return new Snapshot__Params(this);
@@ -102,31 +124,91 @@ export class Transfer__Params {
   }
 }
 
-export class Whitelist extends ethereum.Event {
-  get params(): Whitelist__Params {
-    return new Whitelist__Params(this);
+export class VestingPool extends ethereum.Event {
+  get params(): VestingPool__Params {
+    return new VestingPool__Params(this);
   }
 }
 
-export class Whitelist__Params {
-  _event: Whitelist;
+export class VestingPool__Params {
+  _event: VestingPool;
 
-  constructor(event: Whitelist) {
+  constructor(event: VestingPool) {
     this._event = event;
   }
 
-  get addr(): Address {
+  get wallet(): Address {
     return this._event.parameters[0].value.toAddress();
   }
+}
 
-  get whitelisted(): boolean {
-    return this._event.parameters[1].value.toBoolean();
+export class PollenToken__getVestingPoolParamsResultValue0Struct extends ethereum.Tuple {
+  get isRestricted(): boolean {
+    return this[0].toBoolean();
+  }
+
+  get alreadyVested(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get targetOneScaled(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get targetTwoScaled(): BigInt {
+    return this[3].toBigInt();
   }
 }
 
 export class PollenToken extends ethereum.SmartContract {
   static bind(address: Address): PollenToken {
     return new PollenToken("PollenToken", address);
+  }
+
+  DOMAIN_SEPARATOR(): Bytes {
+    let result = super.call(
+      "DOMAIN_SEPARATOR",
+      "DOMAIN_SEPARATOR():(bytes32)",
+      []
+    );
+
+    return result[0].toBytes();
+  }
+
+  try_DOMAIN_SEPARATOR(): ethereum.CallResult<Bytes> {
+    let result = super.tryCall(
+      "DOMAIN_SEPARATOR",
+      "DOMAIN_SEPARATOR():(bytes32)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBytes());
+  }
+
+  PERMIT_TYPEHASH(): Bytes {
+    let result = super.call(
+      "PERMIT_TYPEHASH",
+      "PERMIT_TYPEHASH():(bytes32)",
+      []
+    );
+
+    return result[0].toBytes();
+  }
+
+  try_PERMIT_TYPEHASH(): ethereum.CallResult<Bytes> {
+    let result = super.tryCall(
+      "PERMIT_TYPEHASH",
+      "PERMIT_TYPEHASH():(bytes32)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBytes());
   }
 
   allowance(owner: Address, spender: Address): BigInt {
@@ -318,6 +400,25 @@ export class PollenToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  nonces(param0: Address): BigInt {
+    let result = super.call("nonces", "nonces(address):(uint256)", [
+      ethereum.Value.fromAddress(param0)
+    ]);
+
+    return result[0].toBigInt();
+  }
+
+  try_nonces(param0: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("nonces", "nonces(address):(uint256)", [
+      ethereum.Value.fromAddress(param0)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   owner(): Address {
     let result = super.call("owner", "owner():(address)", []);
 
@@ -460,18 +561,41 @@ export class PollenToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  isWhitelisted(account: Address): boolean {
-    let result = super.call("isWhitelisted", "isWhitelisted(address):(bool)", [
+  getVestingPools(): Array<Address> {
+    let result = super.call(
+      "getVestingPools",
+      "getVestingPools():(address[6])",
+      []
+    );
+
+    return result[0].toAddressArray();
+  }
+
+  try_getVestingPools(): ethereum.CallResult<Array<Address>> {
+    let result = super.tryCall(
+      "getVestingPools",
+      "getVestingPools():(address[6])",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddressArray());
+  }
+
+  isVestingPool(account: Address): boolean {
+    let result = super.call("isVestingPool", "isVestingPool(address):(bool)", [
       ethereum.Value.fromAddress(account)
     ]);
 
     return result[0].toBoolean();
   }
 
-  try_isWhitelisted(account: Address): ethereum.CallResult<boolean> {
+  try_isVestingPool(account: Address): ethereum.CallResult<boolean> {
     let result = super.tryCall(
-      "isWhitelisted",
-      "isWhitelisted(address):(bool)",
+      "isVestingPool",
+      "isVestingPool(address):(bool)",
       [ethereum.Value.fromAddress(account)]
     );
     if (result.reverted) {
@@ -479,6 +603,104 @@ export class PollenToken extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  getVestingPoolParams(
+    wallet: Address
+  ): PollenToken__getVestingPoolParamsResultValue0Struct {
+    let result = super.call(
+      "getVestingPoolParams",
+      "getVestingPoolParams(address):((bool,uint88,uint80,uint80))",
+      [ethereum.Value.fromAddress(wallet)]
+    );
+
+    return result[0].toTuple() as PollenToken__getVestingPoolParamsResultValue0Struct;
+  }
+
+  try_getVestingPoolParams(
+    wallet: Address
+  ): ethereum.CallResult<PollenToken__getVestingPoolParamsResultValue0Struct> {
+    let result = super.tryCall(
+      "getVestingPoolParams",
+      "getVestingPoolParams(address):((bool,uint88,uint80,uint80))",
+      [ethereum.Value.fromAddress(wallet)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTuple() as PollenToken__getVestingPoolParamsResultValue0Struct
+    );
+  }
+
+  getPoolPendingPollen(wallet: Address): BigInt {
+    let result = super.call(
+      "getPoolPendingPollen",
+      "getPoolPendingPollen(address):(uint256)",
+      [ethereum.Value.fromAddress(wallet)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getPoolPendingPollen(wallet: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getPoolPendingPollen",
+      "getPoolPendingPollen(address):(uint256)",
+      [ethereum.Value.fromAddress(wallet)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  withdrawPoolPollen(wallet: Address): BigInt {
+    let result = super.call(
+      "withdrawPoolPollen",
+      "withdrawPoolPollen(address):(uint256)",
+      [ethereum.Value.fromAddress(wallet)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_withdrawPoolPollen(wallet: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "withdrawPoolPollen",
+      "withdrawPoolPollen(address):(uint256)",
+      [ethereum.Value.fromAddress(wallet)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  balanceOfPoolsAt(snapshotId: BigInt): BigInt {
+    let result = super.call(
+      "balanceOfPoolsAt",
+      "balanceOfPoolsAt(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(snapshotId)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_balanceOfPoolsAt(snapshotId: BigInt): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "balanceOfPoolsAt",
+      "balanceOfPoolsAt(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(snapshotId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 }
 
@@ -517,70 +739,6 @@ export class ApproveCall__Outputs {
 
   get value0(): boolean {
     return this._call.outputValues[0].value.toBoolean();
-  }
-}
-
-export class BurnCall extends ethereum.Call {
-  get inputs(): BurnCall__Inputs {
-    return new BurnCall__Inputs(this);
-  }
-
-  get outputs(): BurnCall__Outputs {
-    return new BurnCall__Outputs(this);
-  }
-}
-
-export class BurnCall__Inputs {
-  _call: BurnCall;
-
-  constructor(call: BurnCall) {
-    this._call = call;
-  }
-
-  get amount(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class BurnCall__Outputs {
-  _call: BurnCall;
-
-  constructor(call: BurnCall) {
-    this._call = call;
-  }
-}
-
-export class BurnFromCall extends ethereum.Call {
-  get inputs(): BurnFromCall__Inputs {
-    return new BurnFromCall__Inputs(this);
-  }
-
-  get outputs(): BurnFromCall__Outputs {
-    return new BurnFromCall__Outputs(this);
-  }
-}
-
-export class BurnFromCall__Inputs {
-  _call: BurnFromCall;
-
-  constructor(call: BurnFromCall) {
-    this._call = call;
-  }
-
-  get account(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get amount(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-}
-
-export class BurnFromCall__Outputs {
-  _call: BurnFromCall;
-
-  constructor(call: BurnFromCall) {
-    this._call = call;
   }
 }
 
@@ -660,32 +818,56 @@ export class IncreaseAllowanceCall__Outputs {
   }
 }
 
-export class MintCall extends ethereum.Call {
-  get inputs(): MintCall__Inputs {
-    return new MintCall__Inputs(this);
+export class PermitCall extends ethereum.Call {
+  get inputs(): PermitCall__Inputs {
+    return new PermitCall__Inputs(this);
   }
 
-  get outputs(): MintCall__Outputs {
-    return new MintCall__Outputs(this);
+  get outputs(): PermitCall__Outputs {
+    return new PermitCall__Outputs(this);
   }
 }
 
-export class MintCall__Inputs {
-  _call: MintCall;
+export class PermitCall__Inputs {
+  _call: PermitCall;
 
-  constructor(call: MintCall) {
+  constructor(call: PermitCall) {
     this._call = call;
   }
 
-  get amount(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
+  get owner(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get spender(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+
+  get value(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+
+  get deadline(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
+  }
+
+  get v(): i32 {
+    return this._call.inputValues[4].value.toI32();
+  }
+
+  get r(): Bytes {
+    return this._call.inputValues[5].value.toBytes();
+  }
+
+  get s(): Bytes {
+    return this._call.inputValues[6].value.toBytes();
   }
 }
 
-export class MintCall__Outputs {
-  _call: MintCall;
+export class PermitCall__Outputs {
+  _call: PermitCall;
 
-  constructor(call: MintCall) {
+  constructor(call: PermitCall) {
     this._call = call;
   }
 }
@@ -712,6 +894,40 @@ export class RenounceOwnershipCall__Outputs {
   _call: RenounceOwnershipCall;
 
   constructor(call: RenounceOwnershipCall) {
+    this._call = call;
+  }
+}
+
+export class RescueTokensCall extends ethereum.Call {
+  get inputs(): RescueTokensCall__Inputs {
+    return new RescueTokensCall__Inputs(this);
+  }
+
+  get outputs(): RescueTokensCall__Outputs {
+    return new RescueTokensCall__Outputs(this);
+  }
+}
+
+export class RescueTokensCall__Inputs {
+  _call: RescueTokensCall;
+
+  constructor(call: RescueTokensCall) {
+    this._call = call;
+  }
+
+  get _token(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get _to(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+}
+
+export class RescueTokensCall__Outputs {
+  _call: RescueTokensCall;
+
+  constructor(call: RescueTokensCall) {
     this._call = call;
   }
 }
@@ -872,14 +1088,6 @@ export class InitializeCall__Inputs {
   constructor(call: InitializeCall) {
     this._call = call;
   }
-
-  get name(): string {
-    return this._call.inputValues[0].value.toString();
-  }
-
-  get symbol(): string {
-    return this._call.inputValues[1].value.toString();
-  }
 }
 
 export class InitializeCall__Outputs {
@@ -890,36 +1098,36 @@ export class InitializeCall__Outputs {
   }
 }
 
-export class UpdateWhitelistCall extends ethereum.Call {
-  get inputs(): UpdateWhitelistCall__Inputs {
-    return new UpdateWhitelistCall__Inputs(this);
+export class WithdrawPoolPollenCall extends ethereum.Call {
+  get inputs(): WithdrawPoolPollenCall__Inputs {
+    return new WithdrawPoolPollenCall__Inputs(this);
   }
 
-  get outputs(): UpdateWhitelistCall__Outputs {
-    return new UpdateWhitelistCall__Outputs(this);
-  }
-}
-
-export class UpdateWhitelistCall__Inputs {
-  _call: UpdateWhitelistCall;
-
-  constructor(call: UpdateWhitelistCall) {
-    this._call = call;
-  }
-
-  get accounts(): Array<Address> {
-    return this._call.inputValues[0].value.toAddressArray();
-  }
-
-  get whitelisted(): boolean {
-    return this._call.inputValues[1].value.toBoolean();
+  get outputs(): WithdrawPoolPollenCall__Outputs {
+    return new WithdrawPoolPollenCall__Outputs(this);
   }
 }
 
-export class UpdateWhitelistCall__Outputs {
-  _call: UpdateWhitelistCall;
+export class WithdrawPoolPollenCall__Inputs {
+  _call: WithdrawPoolPollenCall;
 
-  constructor(call: UpdateWhitelistCall) {
+  constructor(call: WithdrawPoolPollenCall) {
     this._call = call;
+  }
+
+  get wallet(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class WithdrawPoolPollenCall__Outputs {
+  _call: WithdrawPoolPollenCall;
+
+  constructor(call: WithdrawPoolPollenCall) {
+    this._call = call;
+  }
+
+  get amount(): BigInt {
+    return this._call.outputValues[0].value.toBigInt();
   }
 }
