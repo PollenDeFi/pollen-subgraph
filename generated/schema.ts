@@ -747,13 +747,13 @@ export class Member extends Entity {
     }
   }
 
-  get delegates(): Array<string> {
-    let value = this.get("delegates");
+  get delegators(): Array<string> {
+    let value = this.get("delegators");
     return value.toStringArray();
   }
 
-  set delegates(value: Array<string>) {
-    this.set("delegates", Value.fromStringArray(value));
+  set delegators(value: Array<string>) {
+    this.set("delegators", Value.fromStringArray(value));
   }
 }
 
