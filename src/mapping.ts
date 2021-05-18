@@ -3,7 +3,7 @@ import {
   ipfs,
   Address,
   BigDecimal,
-  log
+  log,
 } from "@graphprotocol/graph-ts";
 import {
   PollenDAO,
@@ -14,7 +14,10 @@ import {
   Executed,
   Redeemed,
   PointsRewarded,
-  RewardWithdrawal
+  RewardWithdrawal,
+  Delegated,
+  Undelegated,
+  AssetRemoved,
 } from "../generated/Pollen/PollenDAO";
 import { PaiToken } from "../generated/Pollen/PaiToken";
 import { PollenToken } from "../generated/Pollen/PollenToken";
@@ -30,7 +33,7 @@ import {
   Member,
   PollenWithdrawal as PollenWithdrawalItem,
   ProposalTerm,
-  Voter
+  Voter,
 } from "../generated/schema";
 import {
   getProposalType,
@@ -45,7 +48,7 @@ import {
   getBaseCcyType,
   BaseCcyType,
   getOrderType,
-  getVoterId
+  getVoterId,
 } from "./helpers";
 
 const constId = "0";
@@ -91,19 +94,19 @@ function init(): void {
   earnableReward4.save();
 
   communityRewards.earnableRewards = communityRewards.earnableRewards.concat([
-    earnableReward0.id
+    earnableReward0.id,
   ]);
   communityRewards.earnableRewards = communityRewards.earnableRewards.concat([
-    earnableReward1.id
+    earnableReward1.id,
   ]);
   communityRewards.earnableRewards = communityRewards.earnableRewards.concat([
-    earnableReward2.id
+    earnableReward2.id,
   ]);
   communityRewards.earnableRewards = communityRewards.earnableRewards.concat([
-    earnableReward3.id
+    earnableReward3.id,
   ]);
   communityRewards.earnableRewards = communityRewards.earnableRewards.concat([
-    earnableReward4.id
+    earnableReward4.id,
   ]);
 
   communityRewards.save();
@@ -192,7 +195,7 @@ export function handleSubmitted(event: Submitted): void {
     if (paiSupplyRes.reverted) {
       log.info("snapshot pai supply failed", [
         proposal.id,
-        snapshotId.toString()
+        snapshotId.toString(),
       ]);
       snapshot.paiSupply = BigDecimal.fromString("0");
     } else {
@@ -203,7 +206,7 @@ export function handleSubmitted(event: Submitted): void {
     if (pollenSupplyRes.reverted) {
       log.info("snapshot pollen supply failed", [
         proposal.id,
-        snapshotId.toString()
+        snapshotId.toString(),
       ]);
       snapshot.pollenSupply = BigDecimal.fromString("0");
     } else {
@@ -341,7 +344,7 @@ export function handleExecuted(event: Executed): void {
 }
 
 export function handleRedeemed(event: Redeemed): void {
-  Portfolio.load(constId).assets.forEach(tokenId => {
+  Portfolio.load(constId).assets.forEach((tokenId) => {
     let assetToken = AssetToken.load(tokenId);
     let assetContract = GenericERC20.bind(Address.fromString(assetToken.id));
     let contractStr = Portfolio.load(constId).contract.toHexString();
@@ -356,41 +359,31 @@ export function handlePointsRewarded(event: PointsRewarded): void {
   if (!initComplete) {
     init();
   }
-  let memberRewards = Member.load(event.params.member.toHexString());
-  if (memberRewards == null) {
-    memberRewards = new Member(event.params.member.toHexString());
-    memberRewards.totalPoints = BigInt.fromI32(0);
-    memberRewards.totalWithdrawn = BigDecimal.fromString("0");
-  }
+  let member = getOrCreateMember(event.params.member.toHexString());
   let id = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   let reward = new EarnedReward(id);
-  let newTotal = event.params.points.plus(memberRewards.totalPoints);
+  let newTotal = event.params.points.plus(member.totalPoints);
   reward.points = event.params.points;
   reward.type = getRewardKind(event.params.kind);
   reward.earnedAt = convertSolTimestampToJs(event.block.timestamp);
   reward.save();
 
-  memberRewards.totalPoints = newTotal;
-  memberRewards.rewards = memberRewards.rewards.concat([reward.id]);
-  memberRewards.save();
+  member.totalPoints = newTotal;
+  member.rewards = member.rewards.concat([reward.id]);
+  member.save();
 }
 
 export function handlePollenWithdrawal(event: RewardWithdrawal): void {
-  let memberRewards = Member.load(event.params.member.toHexString());
-  if (memberRewards == null) {
-    memberRewards = new Member(event.params.member.toHexString());
-    memberRewards.totalPoints = BigInt.fromI32(0);
-    memberRewards.totalWithdrawn = BigDecimal.fromString("0");
-  }
+  let member = getOrCreateMember(event.params.member.toHexString());
   let id = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   let withdrawal = new PollenWithdrawalItem(id);
   let decimalAmount = convertEthToDecimal(event.params.amount);
-  let newTotal = decimalAmount.plus(memberRewards.totalWithdrawn);
-  memberRewards.totalWithdrawn = newTotal;
+  let newTotal = decimalAmount.plus(member.totalWithdrawn);
+  member.totalWithdrawn = newTotal;
   withdrawal.date = convertSolTimestampToJs(event.block.timestamp);
   withdrawal.amount = decimalAmount;
-  memberRewards.withdrawals = memberRewards.withdrawals.concat([withdrawal.id]);
-  memberRewards.save();
+  member.withdrawals = member.withdrawals.concat([withdrawal.id]);
+  member.save();
 }
 
 export function handleTermsSwitched(event: VotingTermsSwitched): void {
@@ -407,6 +400,56 @@ export function handleTermsSwitched(event: VotingTermsSwitched): void {
     proposalTerms.executionOpenDelay = terms.executionOpenDelay;
     proposalTerms.save();
   }
+}
+
+export function handleDelegated(event: Delegated): void {
+  let delegator = getOrCreateMember(event.params.account.toHexString());
+  let delegatee = getOrCreateMember(event.params.to.toHexString());
+  if (!delegatee.delegates.includes(delegator.id)) {
+    delegatee.delegates = delegatee.delegates.concat([delegator.id]);
+  }
+  delegator.save();
+  delegatee.save();
+}
+
+export function handleUndelegated(event: Undelegated): void {
+  let delegator = getOrCreateMember(event.params.account.toHexString());
+  let delegatee = getOrCreateMember(event.params.from.toHexString());
+  let index = delegatee.delegates.indexOf(delegator.id);
+  if (index !== -1) {
+    let delegates = delegatee.delegates;
+    delegates.splice(index, 1);
+    delegatee.delegates = delegates;
+  }
+  delegatee.save();
+}
+
+export function handleAssetRemoved(event: AssetRemoved): void {
+  let assetToken = AssetToken.load(event.params.asset.toHexString());
+
+  if (assetToken != null) {
+    let portfolio = Portfolio.load(constId);
+    if (portfolio != null) {
+      let portfolioIndex = portfolio.assets.indexOf(assetToken.id);
+      if (portfolioIndex !== -1) {
+        let assets = portfolio.assets;
+        assets.splice(portfolioIndex, 1);
+        portfolio.assets = assets;
+      }
+      portfolio.save();
+    }
+  }
+}
+
+function getOrCreateMember(address: string): Member {
+  let member = Member.load(address);
+  if (member == null) {
+    member = new Member(address);
+    member.totalPoints = BigInt.fromI32(0);
+    member.totalWithdrawn = BigDecimal.fromString("0");
+    member.delegates = [];
+  }
+  return member as Member;
 }
 
 function getOrCreatePortfolio(): Portfolio {

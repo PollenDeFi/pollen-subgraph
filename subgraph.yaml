@@ -54,4 +54,11 @@ dataSources:
           handler: handlePointsRewarded
         - event: RewardWithdrawal(indexed address,uint256)
           handler: handlePollenWithdrawal
+        - event: Delegated(indexed address,indexed address)
+          handler: handleDelegated
+        - event: Undelegated(indexed address,indexed address)
+          handler: handleUndelegated
+        - event: AssetRemoved(indexed address)
+          handler: handleAssetRemoved
+
       file: ./src/mapping.ts

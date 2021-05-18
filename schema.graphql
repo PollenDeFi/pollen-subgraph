@@ -116,6 +116,7 @@ type Member @entity {
   totalWithdrawn: BigDecimal!
   rewards: [EarnedReward!]
   withdrawals: [PollenWithdrawal!]
+  delegates: [Member!]!
 }
 
 type EarnedReward @entity {

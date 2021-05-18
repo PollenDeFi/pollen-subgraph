@@ -313,7 +313,7 @@ export class Proposal extends Entity {
 
   get executedAt(): BigInt | null {
     let value = this.get("executedAt");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toBigInt();
@@ -598,7 +598,7 @@ export class Portfolio extends Entity {
 
   get assets(): Array<string> | null {
     let value = this.get("assets");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -646,7 +646,7 @@ export class CommunityRewards extends Entity {
 
   get earnableRewards(): Array<string> | null {
     let value = this.get("earnableRewards");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -715,7 +715,7 @@ export class Member extends Entity {
 
   get rewards(): Array<string> | null {
     let value = this.get("rewards");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -732,7 +732,7 @@ export class Member extends Entity {
 
   get withdrawals(): Array<string> | null {
     let value = this.get("withdrawals");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -745,6 +745,15 @@ export class Member extends Entity {
     } else {
       this.set("withdrawals", Value.fromStringArray(value as Array<string>));
     }
+  }
+
+  get delegates(): Array<string> {
+    let value = this.get("delegates");
+    return value.toStringArray();
+  }
+
+  set delegates(value: Array<string>) {
+    this.set("delegates", Value.fromStringArray(value));
   }
 }
 
