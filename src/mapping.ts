@@ -405,8 +405,8 @@ export function handleTermsSwitched(event: VotingTermsSwitched): void {
 export function handleDelegated(event: Delegated): void {
   let delegator = getOrCreateMember(event.params.account.toHexString());
   let delegatee = getOrCreateMember(event.params.to.toHexString());
-  if (!delegatee.delegates.includes(delegator.id)) {
-    delegatee.delegates = delegatee.delegates.concat([delegator.id]);
+  if (!delegatee.delegators.includes(delegator.id)) {
+    delegatee.delegators = delegatee.delegators.concat([delegator.id]);
   }
   delegator.save();
   delegatee.save();
@@ -415,11 +415,11 @@ export function handleDelegated(event: Delegated): void {
 export function handleUndelegated(event: Undelegated): void {
   let delegator = getOrCreateMember(event.params.account.toHexString());
   let delegatee = getOrCreateMember(event.params.from.toHexString());
-  let index = delegatee.delegates.indexOf(delegator.id);
+  let index = delegatee.delegators.indexOf(delegator.id);
   if (index !== -1) {
-    let delegates = delegatee.delegates;
-    delegates.splice(index, 1);
-    delegatee.delegates = delegates;
+    let delegators = delegatee.delegators;
+    delegators.splice(index, 1);
+    delegatee.delegators = delegators;
   }
   delegatee.save();
 }
@@ -447,7 +447,7 @@ function getOrCreateMember(address: string): Member {
     member = new Member(address);
     member.totalPoints = BigInt.fromI32(0);
     member.totalWithdrawn = BigDecimal.fromString("0");
-    member.delegates = [];
+    member.delegators = [];
   }
   return member as Member;
 }
