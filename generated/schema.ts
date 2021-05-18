@@ -212,13 +212,13 @@ export class Proposal extends Entity {
     this.set("assetTokenAmount", Value.fromBigDecimal(value));
   }
 
-  get pollenAmount(): BigDecimal {
-    let value = this.get("pollenAmount");
+  get paiAmount(): BigDecimal {
+    let value = this.get("paiAmount");
     return value.toBigDecimal();
   }
 
-  set pollenAmount(value: BigDecimal) {
-    this.set("pollenAmount", Value.fromBigDecimal(value));
+  set paiAmount(value: BigDecimal) {
+    this.set("paiAmount", Value.fromBigDecimal(value));
   }
 
   get description(): string {
@@ -313,7 +313,7 @@ export class Proposal extends Entity {
 
   get executedAt(): BigInt | null {
     let value = this.get("executedAt");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toBigInt();
@@ -404,6 +404,15 @@ export class Snapshot extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get paiSupply(): BigDecimal {
+    let value = this.get("paiSupply");
+    return value.toBigDecimal();
+  }
+
+  set paiSupply(value: BigDecimal) {
+    this.set("paiSupply", Value.fromBigDecimal(value));
+  }
+
   get pollenSupply(): BigDecimal {
     let value = this.get("pollenSupply");
     return value.toBigDecimal();
@@ -413,22 +422,13 @@ export class Snapshot extends Entity {
     this.set("pollenSupply", Value.fromBigDecimal(value));
   }
 
-  get stemSupply(): BigDecimal {
-    let value = this.get("stemSupply");
+  get pollenEffectiveVoteSupply(): BigDecimal {
+    let value = this.get("pollenEffectiveVoteSupply");
     return value.toBigDecimal();
   }
 
-  set stemSupply(value: BigDecimal) {
-    this.set("stemSupply", Value.fromBigDecimal(value));
-  }
-
-  get stemEffectiveVoteSupply(): BigDecimal {
-    let value = this.get("stemEffectiveVoteSupply");
-    return value.toBigDecimal();
-  }
-
-  set stemEffectiveVoteSupply(value: BigDecimal) {
-    this.set("stemEffectiveVoteSupply", Value.fromBigDecimal(value));
+  set pollenEffectiveVoteSupply(value: BigDecimal) {
+    this.set("pollenEffectiveVoteSupply", Value.fromBigDecimal(value));
   }
 }
 
@@ -462,6 +462,15 @@ export class CurrentSupply extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get pai(): BigDecimal {
+    let value = this.get("pai");
+    return value.toBigDecimal();
+  }
+
+  set pai(value: BigDecimal) {
+    this.set("pai", Value.fromBigDecimal(value));
+  }
+
   get pollen(): BigDecimal {
     let value = this.get("pollen");
     return value.toBigDecimal();
@@ -471,22 +480,13 @@ export class CurrentSupply extends Entity {
     this.set("pollen", Value.fromBigDecimal(value));
   }
 
-  get stem(): BigDecimal {
-    let value = this.get("stem");
+  get effectivePollen(): BigDecimal {
+    let value = this.get("effectivePollen");
     return value.toBigDecimal();
   }
 
-  set stem(value: BigDecimal) {
-    this.set("stem", Value.fromBigDecimal(value));
-  }
-
-  get effectiveStem(): BigDecimal {
-    let value = this.get("effectiveStem");
-    return value.toBigDecimal();
-  }
-
-  set effectiveStem(value: BigDecimal) {
-    this.set("effectiveStem", Value.fromBigDecimal(value));
+  set effectivePollen(value: BigDecimal) {
+    this.set("effectivePollen", Value.fromBigDecimal(value));
   }
 }
 
@@ -598,7 +598,7 @@ export class Portfolio extends Entity {
 
   get assets(): Array<string> | null {
     let value = this.get("assets");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toStringArray();
@@ -646,7 +646,7 @@ export class CommunityRewards extends Entity {
 
   get earnableRewards(): Array<string> | null {
     let value = this.get("earnableRewards");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toStringArray();
@@ -715,7 +715,7 @@ export class Member extends Entity {
 
   get rewards(): Array<string> | null {
     let value = this.get("rewards");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toStringArray();
@@ -732,7 +732,7 @@ export class Member extends Entity {
 
   get withdrawals(): Array<string> | null {
     let value = this.get("withdrawals");
-    if (value === null) {
+    if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
       return value.toStringArray();
@@ -855,7 +855,7 @@ export class EarnableReward extends Entity {
   }
 }
 
-export class StemWithdrawal extends Entity {
+export class PollenWithdrawal extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -863,17 +863,17 @@ export class StemWithdrawal extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save StemWithdrawal entity without an ID");
+    assert(id !== null, "Cannot save PollenWithdrawal entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save StemWithdrawal entity with non-string ID. " +
+      "Cannot save PollenWithdrawal entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("StemWithdrawal", id.toString(), this);
+    store.set("PollenWithdrawal", id.toString(), this);
   }
 
-  static load(id: string): StemWithdrawal | null {
-    return store.get("StemWithdrawal", id) as StemWithdrawal | null;
+  static load(id: string): PollenWithdrawal | null {
+    return store.get("PollenWithdrawal", id) as PollenWithdrawal | null;
   }
 
   get id(): string {
