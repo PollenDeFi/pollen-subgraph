@@ -45,6 +45,12 @@ type Voter @entity {
   votes: BigDecimal!
 }
 
+type DelegateVoter @entity {
+  id: ID!
+  inFavour: Boolean!
+  delegators: [Member!]!
+}
+
 type Proposal @entity {
   id: ID!
   proposalType: ProposalType!
@@ -67,6 +73,7 @@ type Proposal @entity {
   terms: ProposalTerm!
   orderType: OrderType!
   voters: [Voter!]!
+  delegateVotes: [DelegateVoter!]!
 }
 
 type Snapshot @entity {
@@ -117,6 +124,7 @@ type Member @entity {
   rewards: [EarnedReward!]
   withdrawals: [PollenWithdrawal!]
   delegators: [Member!]!
+  delegatingTo: Bytes
 }
 
 type EarnedReward @entity {
