@@ -182,6 +182,7 @@ export function handleSubmitted(event: Submitted): void {
   proposal.paiAmount = convertEthToDecimal(chainProposal.value0.paiAmount);
   proposal.description = ipfs.cat(chainProposal.value3).toString();
   proposal.submitter = chainProposal.value0.submitter;
+  proposal.delegateVotes = [];
 
   let termsId = BigInt.fromI32(chainProposal.value0.votingTermsId);
   let terms = ProposalTerm.load(termsId.toString());
@@ -408,6 +409,7 @@ export function handleDelegated(event: Delegated): void {
   if (!delegatee.delegators.includes(delegator.id)) {
     delegatee.delegators = delegatee.delegators.concat([delegator.id]);
   }
+  delegator.delegatingTo = event.params.to;
   delegator.save();
   delegatee.save();
 }
@@ -421,7 +423,9 @@ export function handleUndelegated(event: Undelegated): void {
     delegators.splice(index, 1);
     delegatee.delegators = delegators;
   }
+  delegator.delegatingTo = null;
   delegatee.save();
+  delegator.save();
 }
 
 export function handleAssetRemoved(event: AssetRemoved): void {

@@ -155,6 +155,55 @@ export class Voter extends Entity {
   }
 }
 
+export class DelegateVoter extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save DelegateVoter entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save DelegateVoter entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("DelegateVoter", id.toString(), this);
+  }
+
+  static load(id: string): DelegateVoter | null {
+    return store.get("DelegateVoter", id) as DelegateVoter | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get inFavour(): boolean {
+    let value = this.get("inFavour");
+    return value.toBoolean();
+  }
+
+  set inFavour(value: boolean) {
+    this.set("inFavour", Value.fromBoolean(value));
+  }
+
+  get delegators(): Array<string> {
+    let value = this.get("delegators");
+    return value.toStringArray();
+  }
+
+  set delegators(value: Array<string>) {
+    this.set("delegators", Value.fromStringArray(value));
+  }
+}
+
 export class Proposal extends Entity {
   constructor(id: string) {
     super();
@@ -371,6 +420,15 @@ export class Proposal extends Entity {
 
   set voters(value: Array<string>) {
     this.set("voters", Value.fromStringArray(value));
+  }
+
+  get delegateVotes(): Array<string> {
+    let value = this.get("delegateVotes");
+    return value.toStringArray();
+  }
+
+  set delegateVotes(value: Array<string>) {
+    this.set("delegateVotes", Value.fromStringArray(value));
   }
 }
 
@@ -754,6 +812,23 @@ export class Member extends Entity {
 
   set delegators(value: Array<string>) {
     this.set("delegators", Value.fromStringArray(value));
+  }
+
+  get delegatingTo(): Bytes | null {
+    let value = this.get("delegatingTo");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set delegatingTo(value: Bytes | null) {
+    if (value === null) {
+      this.unset("delegatingTo");
+    } else {
+      this.set("delegatingTo", Value.fromBytes(value as Bytes));
+    }
   }
 }
 
