@@ -363,13 +363,13 @@ export function handlePointsRewarded(event: PointsRewarded): void {
   let member = getOrCreateMember(event.params.member.toHexString());
   let id = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   let reward = new EarnedReward(id);
-  let newTotal = event.params.points.plus(member.totalPoints);
+  let newTotal = event.params.points.plus(member.reputation);
   reward.points = event.params.points;
   reward.type = getRewardKind(event.params.kind);
   reward.earnedAt = convertSolTimestampToJs(event.block.timestamp);
   reward.save();
 
-  member.totalPoints = newTotal;
+  member.reputation = newTotal;
   member.rewards = member.rewards.concat([reward.id]);
   member.save();
 }
@@ -449,7 +449,7 @@ function getOrCreateMember(address: string): Member {
   let member = Member.load(address);
   if (member == null) {
     member = new Member(address);
-    member.totalPoints = BigInt.fromI32(0);
+    member.reputation = BigInt.fromI32(0);
     member.totalWithdrawn = BigDecimal.fromString("0");
     member.delegators = [];
   }

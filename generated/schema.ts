@@ -753,13 +753,13 @@ export class Member extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get totalPoints(): BigInt {
-    let value = this.get("totalPoints");
+  get reputation(): BigInt {
+    let value = this.get("reputation");
     return value.toBigInt();
   }
 
-  set totalPoints(value: BigInt) {
-    this.set("totalPoints", Value.fromBigInt(value));
+  set reputation(value: BigInt) {
+    this.set("reputation", Value.fromBigInt(value));
   }
 
   get totalWithdrawn(): BigDecimal {
