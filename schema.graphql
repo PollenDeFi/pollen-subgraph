@@ -119,7 +119,7 @@ type CommunityRewards @entity {
 
 type Member @entity {
   id: ID! # user address
-  totalPoints: BigInt!
+  reputation: BigInt!
   totalWithdrawn: BigDecimal!
   rewards: [EarnedReward!]
   withdrawals: [PollenWithdrawal!]
