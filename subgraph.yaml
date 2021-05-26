@@ -9,7 +9,7 @@ dataSources:
     network: ropsten
     source:
       # ropsten
-      address: "0x419C191506ec60E91C5a7B3D152ec14A774BB8b7"
+      address: "0xFe99762d5bfC9d9763598Abe974c816B2434eA0A"
       abi: PollenDAO
       startBlock: 9517110
 
@@ -42,7 +42,7 @@ dataSources:
           handler: handleAssetAdded
         - event: Submitted(uint256,uint8,address,uint256)
           handler: handleSubmitted
-        - event: VotedOn(uint256,address,bool,uint256)
+        - event: VotedOn(uint256,address,bool,uint256,address)
           handler: handleVotedOn
         - event: VotingTermsSwitched(uint256,bool)
           handler: handleTermsSwitched
@@ -60,5 +60,7 @@ dataSources:
           handler: handleUndelegated
         - event: AssetRemoved(indexed address)
           handler: handleAssetRemoved
+        - event: StatusChanged(uint256,uint8,uint8)
+          handler: handleStatusChanged
 
       file: ./src/mapping.ts

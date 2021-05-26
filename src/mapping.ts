@@ -18,6 +18,7 @@ import {
   Delegated,
   Undelegated,
   AssetRemoved,
+  StatusChanged,
 } from "../generated/Pollen/PollenDAO";
 import { PaiToken } from "../generated/Pollen/PaiToken";
 import { PollenToken } from "../generated/Pollen/PollenToken";
@@ -52,18 +53,6 @@ import {
 } from "./helpers";
 
 const constId = "0";
-
-// TODO: Better management of network specific contracts
-
-// Ropsten
-const reservePool = "0xe67903512d7b24C187868edCE5886a4799311C0e";
-const foundationWallet = "0x64662e7849A3cF25821777FF5e663755a4121C87";
-const foundersWallet = "0xc45c40E871CAf671486517dEE4E05f9338cA1732";
-
-// mainnet
-// const reservePool = '0xf8617006b4CD2db7385c1cb613885f1292e51b2e'
-// const foundationWallet = '0x30dDD235bEd94fdbCDc197513a638D6CAa261EC7'
-// const foundersWallet = '0xd7Cc88bB603DceAFB5E8290d8188C8BF36fD742B'
 
 let initComplete = false;
 
@@ -182,7 +171,6 @@ export function handleSubmitted(event: Submitted): void {
   proposal.paiAmount = convertEthToDecimal(chainProposal.value0.paiAmount);
   proposal.description = ipfs.cat(chainProposal.value3).toString();
   proposal.submitter = chainProposal.value0.submitter;
-  proposal.delegateVotes = [];
 
   let termsId = BigInt.fromI32(chainProposal.value0.votingTermsId);
   let terms = ProposalTerm.load(termsId.toString());
@@ -216,22 +204,23 @@ export function handleSubmitted(event: Submitted): void {
       );
     }
 
-    let reserveBalance = tryBalanceOfAt(pollenToken, snapshotId, reservePool);
-    let foundationBalance = tryBalanceOfAt(
-      pollenToken,
-      snapshotId,
-      foundationWallet
-    );
-    let foundersBalance = tryBalanceOfAt(
-      pollenToken,
-      snapshotId,
-      foundersWallet
-    );
+    let poolsBal = pollenToken.try_balanceOfPoolsAt(snapshotId);
 
-    let effectiveSupply = snapshot.pollenSupply
-      .minus(reserveBalance)
-      .minus(foundationBalance)
-      .minus(foundersBalance);
+    if (poolsBal.reverted) {
+      log.info("snapshot vesting bal failed", [
+        proposal.id,
+        snapshotId.toString(),
+      ]);
+      snapshot.vestingPoolsBalance = BigDecimal.fromString("0");
+    } else {
+      snapshot.vestingPoolsBalance = convertEthToDecimal(
+        poolsBal.value as BigInt
+      );
+    }
+
+    let effectiveSupply = snapshot.pollenSupply.minus(
+      snapshot.vestingPoolsBalance
+    );
 
     snapshot.pollenEffectiveVoteSupply = effectiveSupply;
 
@@ -279,6 +268,11 @@ export function handleSubmitted(event: Submitted): void {
   proposal.executionExpiry = convertSolTimestampToJs(
     chainProposal.value1.executionExpiry
   );
+  proposal.executorPriorityExpiry = convertSolTimestampToJs(
+    chainProposal.value1.executionOpen.plus(terms.executorPriority)
+  );
+  proposal.executor = chainProposal.value0.executor;
+
   proposal.save();
 
   let portfolio = getOrCreatePortfolio();
@@ -289,6 +283,14 @@ export function handleSubmitted(event: Submitted): void {
     portfolio.assets = portfolio.assets.concat([assetToken.id]);
   }
   portfolio.save();
+}
+
+export function handleStatusChanged(event: StatusChanged): void {
+  let proposal = Proposal.load(event.params.proposalId.toString());
+  if (proposal != null) {
+    proposal.status = getProposalStatus(event.params.newStatus);
+    proposal.save();
+  }
 }
 
 export function handleVotedOn(event: VotedOn): void {
@@ -306,6 +308,10 @@ export function handleVotedOn(event: VotedOn): void {
     if (voter == null) {
       voter = new Voter(id);
       proposal.voters = proposal.voters.concat([voter.id]);
+    }
+    if (event.params.delegatee != null) {
+      let delegatee = getOrCreateMember(event.params.delegatee.toHexString());
+      voter.delegatee = delegatee.id;
     }
     voter.address = event.params.voter;
     voter.votes = convertEthToDecimal(event.params.votes);
@@ -399,6 +405,7 @@ export function handleTermsSwitched(event: VotingTermsSwitched): void {
     proposalTerms.quorum = BigInt.fromI32(terms.quorum);
     proposalTerms.executionExpiryDelay = terms.executionExpiryDelay;
     proposalTerms.executionOpenDelay = terms.executionOpenDelay;
+    proposalTerms.executorPriority = terms.restrictExecPeriod;
     proposalTerms.save();
   }
 }
@@ -452,6 +459,7 @@ function getOrCreateMember(address: string): Member {
     member.reputation = BigInt.fromI32(0);
     member.totalWithdrawn = BigDecimal.fromString("0");
     member.delegators = [];
+    member.save();
   }
   return member as Member;
 }
