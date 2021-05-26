@@ -95,6 +95,15 @@ export class ProposalTerm extends Entity {
   set votingExpiryDelay(value: BigInt) {
     this.set("votingExpiryDelay", Value.fromBigInt(value));
   }
+
+  get executorPriority(): BigInt {
+    let value = this.get("executorPriority");
+    return value.toBigInt();
+  }
+
+  set executorPriority(value: BigInt) {
+    this.set("executorPriority", Value.fromBigInt(value));
+  }
 }
 
 export class Voter extends Entity {
@@ -153,54 +162,22 @@ export class Voter extends Entity {
   set votes(value: BigDecimal) {
     this.set("votes", Value.fromBigDecimal(value));
   }
-}
 
-export class DelegateVoter extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
+  get delegatee(): string | null {
+    let value = this.get("delegatee");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  save(): void {
-    let id = this.get("id");
-    assert(id !== null, "Cannot save DelegateVoter entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save DelegateVoter entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("DelegateVoter", id.toString(), this);
-  }
-
-  static load(id: string): DelegateVoter | null {
-    return store.get("DelegateVoter", id) as DelegateVoter | null;
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get inFavour(): boolean {
-    let value = this.get("inFavour");
-    return value.toBoolean();
-  }
-
-  set inFavour(value: boolean) {
-    this.set("inFavour", Value.fromBoolean(value));
-  }
-
-  get delegators(): Array<string> {
-    let value = this.get("delegators");
-    return value.toStringArray();
-  }
-
-  set delegators(value: Array<string>) {
-    this.set("delegators", Value.fromStringArray(value));
+  set delegatee(value: string | null) {
+    if (value === null) {
+      this.unset("delegatee");
+    } else {
+      this.set("delegatee", Value.fromString(value as string));
+    }
   }
 }
 
@@ -342,6 +319,24 @@ export class Proposal extends Entity {
     this.set("executionExpiry", Value.fromBigInt(value));
   }
 
+  get executorPriorityExpiry(): BigInt {
+    let value = this.get("executorPriorityExpiry");
+    return value.toBigInt();
+  }
+
+  set executorPriorityExpiry(value: BigInt) {
+    this.set("executorPriorityExpiry", Value.fromBigInt(value));
+  }
+
+  get executor(): Bytes {
+    let value = this.get("executor");
+    return value.toBytes();
+  }
+
+  set executor(value: Bytes) {
+    this.set("executor", Value.fromBytes(value));
+  }
+
   get status(): string {
     let value = this.get("status");
     return value.toString();
@@ -421,15 +416,6 @@ export class Proposal extends Entity {
   set voters(value: Array<string>) {
     this.set("voters", Value.fromStringArray(value));
   }
-
-  get delegateVotes(): Array<string> {
-    let value = this.get("delegateVotes");
-    return value.toStringArray();
-  }
-
-  set delegateVotes(value: Array<string>) {
-    this.set("delegateVotes", Value.fromStringArray(value));
-  }
 }
 
 export class Snapshot extends Entity {
@@ -487,6 +473,15 @@ export class Snapshot extends Entity {
 
   set pollenEffectiveVoteSupply(value: BigDecimal) {
     this.set("pollenEffectiveVoteSupply", Value.fromBigDecimal(value));
+  }
+
+  get vestingPoolsBalance(): BigDecimal {
+    let value = this.get("vestingPoolsBalance");
+    return value.toBigDecimal();
+  }
+
+  set vestingPoolsBalance(value: BigDecimal) {
+    this.set("vestingPoolsBalance", Value.fromBigDecimal(value));
   }
 }
 
