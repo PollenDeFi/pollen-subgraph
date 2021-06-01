@@ -3,7 +3,7 @@ import {
   ipfs,
   Address,
   BigDecimal,
-  log
+  log,
 } from "@graphprotocol/graph-ts";
 import {
   PollenDAO,
@@ -14,7 +14,11 @@ import {
   Executed,
   Redeemed,
   PointsRewarded,
-  RewardWithdrawal
+  RewardWithdrawal,
+  Delegated,
+  Undelegated,
+  AssetRemoved,
+  StatusChanged,
 } from "../generated/Pollen/PollenDAO";
 import { PaiToken } from "../generated/Pollen/PaiToken";
 import { PollenToken } from "../generated/Pollen/PollenToken";
@@ -30,7 +34,7 @@ import {
   Member,
   PollenWithdrawal as PollenWithdrawalItem,
   ProposalTerm,
-  Voter
+  Voter,
 } from "../generated/schema";
 import {
   getProposalType,
@@ -45,22 +49,10 @@ import {
   getBaseCcyType,
   BaseCcyType,
   getOrderType,
-  getVoterId
+  getVoterId,
 } from "./helpers";
 
 const constId = "0";
-
-// TODO: Better management of network specific contracts
-
-// Ropsten
-const reservePool = "0xe67903512d7b24C187868edCE5886a4799311C0e";
-const foundationWallet = "0x64662e7849A3cF25821777FF5e663755a4121C87";
-const foundersWallet = "0xc45c40E871CAf671486517dEE4E05f9338cA1732";
-
-// mainnet
-// const reservePool = '0xf8617006b4CD2db7385c1cb613885f1292e51b2e'
-// const foundationWallet = '0x30dDD235bEd94fdbCDc197513a638D6CAa261EC7'
-// const foundersWallet = '0xd7Cc88bB603DceAFB5E8290d8188C8BF36fD742B'
 
 let initComplete = false;
 
@@ -91,19 +83,19 @@ function init(): void {
   earnableReward4.save();
 
   communityRewards.earnableRewards = communityRewards.earnableRewards.concat([
-    earnableReward0.id
+    earnableReward0.id,
   ]);
   communityRewards.earnableRewards = communityRewards.earnableRewards.concat([
-    earnableReward1.id
+    earnableReward1.id,
   ]);
   communityRewards.earnableRewards = communityRewards.earnableRewards.concat([
-    earnableReward2.id
+    earnableReward2.id,
   ]);
   communityRewards.earnableRewards = communityRewards.earnableRewards.concat([
-    earnableReward3.id
+    earnableReward3.id,
   ]);
   communityRewards.earnableRewards = communityRewards.earnableRewards.concat([
-    earnableReward4.id
+    earnableReward4.id,
   ]);
 
   communityRewards.save();
@@ -192,7 +184,7 @@ export function handleSubmitted(event: Submitted): void {
     if (paiSupplyRes.reverted) {
       log.info("snapshot pai supply failed", [
         proposal.id,
-        snapshotId.toString()
+        snapshotId.toString(),
       ]);
       snapshot.paiSupply = BigDecimal.fromString("0");
     } else {
@@ -203,7 +195,7 @@ export function handleSubmitted(event: Submitted): void {
     if (pollenSupplyRes.reverted) {
       log.info("snapshot pollen supply failed", [
         proposal.id,
-        snapshotId.toString()
+        snapshotId.toString(),
       ]);
       snapshot.pollenSupply = BigDecimal.fromString("0");
     } else {
@@ -212,22 +204,23 @@ export function handleSubmitted(event: Submitted): void {
       );
     }
 
-    let reserveBalance = tryBalanceOfAt(pollenToken, snapshotId, reservePool);
-    let foundationBalance = tryBalanceOfAt(
-      pollenToken,
-      snapshotId,
-      foundationWallet
-    );
-    let foundersBalance = tryBalanceOfAt(
-      pollenToken,
-      snapshotId,
-      foundersWallet
-    );
+    let poolsBal = pollenToken.try_balanceOfPoolsAt(snapshotId);
 
-    let effectiveSupply = snapshot.pollenSupply
-      .minus(reserveBalance)
-      .minus(foundationBalance)
-      .minus(foundersBalance);
+    if (poolsBal.reverted) {
+      log.info("snapshot vesting bal failed", [
+        proposal.id,
+        snapshotId.toString(),
+      ]);
+      snapshot.vestingPoolsBalance = BigDecimal.fromString("0");
+    } else {
+      snapshot.vestingPoolsBalance = convertEthToDecimal(
+        poolsBal.value as BigInt
+      );
+    }
+
+    let effectiveSupply = snapshot.pollenSupply.minus(
+      snapshot.vestingPoolsBalance
+    );
 
     snapshot.pollenEffectiveVoteSupply = effectiveSupply;
 
@@ -275,6 +268,11 @@ export function handleSubmitted(event: Submitted): void {
   proposal.executionExpiry = convertSolTimestampToJs(
     chainProposal.value1.executionExpiry
   );
+  proposal.executorPriorityExpiry = convertSolTimestampToJs(
+    chainProposal.value1.executionOpen.plus(terms.executorPriority)
+  );
+  proposal.executor = chainProposal.value0.executor;
+
   proposal.save();
 
   let portfolio = getOrCreatePortfolio();
@@ -285,6 +283,14 @@ export function handleSubmitted(event: Submitted): void {
     portfolio.assets = portfolio.assets.concat([assetToken.id]);
   }
   portfolio.save();
+}
+
+export function handleStatusChanged(event: StatusChanged): void {
+  let proposal = Proposal.load(event.params.proposalId.toString());
+  if (proposal != null) {
+    proposal.status = getProposalStatus(event.params.newStatus);
+    proposal.save();
+  }
 }
 
 export function handleVotedOn(event: VotedOn): void {
@@ -302,6 +308,10 @@ export function handleVotedOn(event: VotedOn): void {
     if (voter == null) {
       voter = new Voter(id);
       proposal.voters = proposal.voters.concat([voter.id]);
+    }
+    if (event.params.delegatee != null) {
+      let delegatee = getOrCreateMember(event.params.delegatee.toHexString());
+      voter.delegatee = delegatee.id;
     }
     voter.address = event.params.voter;
     voter.votes = convertEthToDecimal(event.params.votes);
@@ -341,7 +351,7 @@ export function handleExecuted(event: Executed): void {
 }
 
 export function handleRedeemed(event: Redeemed): void {
-  Portfolio.load(constId).assets.forEach(tokenId => {
+  Portfolio.load(constId).assets.forEach((tokenId) => {
     let assetToken = AssetToken.load(tokenId);
     let assetContract = GenericERC20.bind(Address.fromString(assetToken.id));
     let contractStr = Portfolio.load(constId).contract.toHexString();
@@ -356,41 +366,31 @@ export function handlePointsRewarded(event: PointsRewarded): void {
   if (!initComplete) {
     init();
   }
-  let memberRewards = Member.load(event.params.member.toHexString());
-  if (memberRewards == null) {
-    memberRewards = new Member(event.params.member.toHexString());
-    memberRewards.totalPoints = BigInt.fromI32(0);
-    memberRewards.totalWithdrawn = BigDecimal.fromString("0");
-  }
+  let member = getOrCreateMember(event.params.member.toHexString());
   let id = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   let reward = new EarnedReward(id);
-  let newTotal = event.params.points.plus(memberRewards.totalPoints);
+  let newTotal = event.params.points.plus(member.reputation);
   reward.points = event.params.points;
   reward.type = getRewardKind(event.params.kind);
   reward.earnedAt = convertSolTimestampToJs(event.block.timestamp);
   reward.save();
 
-  memberRewards.totalPoints = newTotal;
-  memberRewards.rewards = memberRewards.rewards.concat([reward.id]);
-  memberRewards.save();
+  member.reputation = newTotal;
+  member.rewards = member.rewards.concat([reward.id]);
+  member.save();
 }
 
 export function handlePollenWithdrawal(event: RewardWithdrawal): void {
-  let memberRewards = Member.load(event.params.member.toHexString());
-  if (memberRewards == null) {
-    memberRewards = new Member(event.params.member.toHexString());
-    memberRewards.totalPoints = BigInt.fromI32(0);
-    memberRewards.totalWithdrawn = BigDecimal.fromString("0");
-  }
+  let member = getOrCreateMember(event.params.member.toHexString());
   let id = event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   let withdrawal = new PollenWithdrawalItem(id);
   let decimalAmount = convertEthToDecimal(event.params.amount);
-  let newTotal = decimalAmount.plus(memberRewards.totalWithdrawn);
-  memberRewards.totalWithdrawn = newTotal;
+  let newTotal = decimalAmount.plus(member.totalWithdrawn);
+  member.totalWithdrawn = newTotal;
   withdrawal.date = convertSolTimestampToJs(event.block.timestamp);
   withdrawal.amount = decimalAmount;
-  memberRewards.withdrawals = memberRewards.withdrawals.concat([withdrawal.id]);
-  memberRewards.save();
+  member.withdrawals = member.withdrawals.concat([withdrawal.id]);
+  member.save();
 }
 
 export function handleTermsSwitched(event: VotingTermsSwitched): void {
@@ -405,8 +405,63 @@ export function handleTermsSwitched(event: VotingTermsSwitched): void {
     proposalTerms.quorum = BigInt.fromI32(terms.quorum);
     proposalTerms.executionExpiryDelay = terms.executionExpiryDelay;
     proposalTerms.executionOpenDelay = terms.executionOpenDelay;
+    proposalTerms.executorPriority = terms.restrictExecPeriod;
     proposalTerms.save();
   }
+}
+
+export function handleDelegated(event: Delegated): void {
+  let delegator = getOrCreateMember(event.params.account.toHexString());
+  let delegatee = getOrCreateMember(event.params.to.toHexString());
+  if (!delegatee.delegators.includes(delegator.id)) {
+    delegatee.delegators = delegatee.delegators.concat([delegator.id]);
+  }
+  delegator.delegatingTo = event.params.to;
+  delegator.save();
+  delegatee.save();
+}
+
+export function handleUndelegated(event: Undelegated): void {
+  let delegator = getOrCreateMember(event.params.account.toHexString());
+  let delegatee = getOrCreateMember(event.params.from.toHexString());
+  let index = delegatee.delegators.indexOf(delegator.id);
+  if (index !== -1) {
+    let delegators = delegatee.delegators;
+    delegators.splice(index, 1);
+    delegatee.delegators = delegators;
+  }
+  delegator.delegatingTo = null;
+  delegatee.save();
+  delegator.save();
+}
+
+export function handleAssetRemoved(event: AssetRemoved): void {
+  let assetToken = AssetToken.load(event.params.asset.toHexString());
+
+  if (assetToken != null) {
+    let portfolio = Portfolio.load(constId);
+    if (portfolio != null) {
+      let portfolioIndex = portfolio.assets.indexOf(assetToken.id);
+      if (portfolioIndex !== -1) {
+        let assets = portfolio.assets;
+        assets.splice(portfolioIndex, 1);
+        portfolio.assets = assets;
+      }
+      portfolio.save();
+    }
+  }
+}
+
+function getOrCreateMember(address: string): Member {
+  let member = Member.load(address);
+  if (member == null) {
+    member = new Member(address);
+    member.reputation = BigInt.fromI32(0);
+    member.totalWithdrawn = BigDecimal.fromString("0");
+    member.delegators = [];
+    member.save();
+  }
+  return member as Member;
 }
 
 function getOrCreatePortfolio(): Portfolio {

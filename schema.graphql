@@ -36,6 +36,7 @@ type ProposalTerm @entity {
   isExclPools: Boolean!
   quorum: BigInt!
   votingExpiryDelay: BigInt!
+  executorPriority: BigInt!
 }
 
 type Voter @entity {
@@ -43,6 +44,7 @@ type Voter @entity {
   address: Bytes!
   inFavour: Boolean!
   votes: BigDecimal!
+  delegatee: Member
 }
 
 type Proposal @entity {
@@ -59,6 +61,8 @@ type Proposal @entity {
   votingExpiry: BigInt!
   executionOpen: BigInt!
   executionExpiry: BigInt!
+  executorPriorityExpiry: BigInt!
+  executor: Bytes!
   status: ProposalStatus!
   votePassed: Boolean!
   executedAt: BigInt
@@ -74,6 +78,7 @@ type Snapshot @entity {
   paiSupply: BigDecimal!
   pollenSupply: BigDecimal!
   pollenEffectiveVoteSupply: BigDecimal!
+  vestingPoolsBalance: BigDecimal!
 }
 
 type CurrentSupply @entity {
@@ -112,10 +117,12 @@ type CommunityRewards @entity {
 
 type Member @entity {
   id: ID! # user address
-  totalPoints: BigInt!
+  reputation: BigInt!
   totalWithdrawn: BigDecimal!
   rewards: [EarnedReward!]
   withdrawals: [PollenWithdrawal!]
+  delegators: [Member!]!
+  delegatingTo: Bytes
 }
 
 type EarnedReward @entity {

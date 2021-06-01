@@ -95,6 +95,15 @@ export class ProposalTerm extends Entity {
   set votingExpiryDelay(value: BigInt) {
     this.set("votingExpiryDelay", Value.fromBigInt(value));
   }
+
+  get executorPriority(): BigInt {
+    let value = this.get("executorPriority");
+    return value.toBigInt();
+  }
+
+  set executorPriority(value: BigInt) {
+    this.set("executorPriority", Value.fromBigInt(value));
+  }
 }
 
 export class Voter extends Entity {
@@ -152,6 +161,23 @@ export class Voter extends Entity {
 
   set votes(value: BigDecimal) {
     this.set("votes", Value.fromBigDecimal(value));
+  }
+
+  get delegatee(): string | null {
+    let value = this.get("delegatee");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set delegatee(value: string | null) {
+    if (value === null) {
+      this.unset("delegatee");
+    } else {
+      this.set("delegatee", Value.fromString(value as string));
+    }
   }
 }
 
@@ -293,6 +319,24 @@ export class Proposal extends Entity {
     this.set("executionExpiry", Value.fromBigInt(value));
   }
 
+  get executorPriorityExpiry(): BigInt {
+    let value = this.get("executorPriorityExpiry");
+    return value.toBigInt();
+  }
+
+  set executorPriorityExpiry(value: BigInt) {
+    this.set("executorPriorityExpiry", Value.fromBigInt(value));
+  }
+
+  get executor(): Bytes {
+    let value = this.get("executor");
+    return value.toBytes();
+  }
+
+  set executor(value: Bytes) {
+    this.set("executor", Value.fromBytes(value));
+  }
+
   get status(): string {
     let value = this.get("status");
     return value.toString();
@@ -313,7 +357,7 @@ export class Proposal extends Entity {
 
   get executedAt(): BigInt | null {
     let value = this.get("executedAt");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toBigInt();
@@ -429,6 +473,15 @@ export class Snapshot extends Entity {
 
   set pollenEffectiveVoteSupply(value: BigDecimal) {
     this.set("pollenEffectiveVoteSupply", Value.fromBigDecimal(value));
+  }
+
+  get vestingPoolsBalance(): BigDecimal {
+    let value = this.get("vestingPoolsBalance");
+    return value.toBigDecimal();
+  }
+
+  set vestingPoolsBalance(value: BigDecimal) {
+    this.set("vestingPoolsBalance", Value.fromBigDecimal(value));
   }
 }
 
@@ -598,7 +651,7 @@ export class Portfolio extends Entity {
 
   get assets(): Array<string> | null {
     let value = this.get("assets");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -646,7 +699,7 @@ export class CommunityRewards extends Entity {
 
   get earnableRewards(): Array<string> | null {
     let value = this.get("earnableRewards");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -695,13 +748,13 @@ export class Member extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get totalPoints(): BigInt {
-    let value = this.get("totalPoints");
+  get reputation(): BigInt {
+    let value = this.get("reputation");
     return value.toBigInt();
   }
 
-  set totalPoints(value: BigInt) {
-    this.set("totalPoints", Value.fromBigInt(value));
+  set reputation(value: BigInt) {
+    this.set("reputation", Value.fromBigInt(value));
   }
 
   get totalWithdrawn(): BigDecimal {
@@ -715,7 +768,7 @@ export class Member extends Entity {
 
   get rewards(): Array<string> | null {
     let value = this.get("rewards");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -732,7 +785,7 @@ export class Member extends Entity {
 
   get withdrawals(): Array<string> | null {
     let value = this.get("withdrawals");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -744,6 +797,32 @@ export class Member extends Entity {
       this.unset("withdrawals");
     } else {
       this.set("withdrawals", Value.fromStringArray(value as Array<string>));
+    }
+  }
+
+  get delegators(): Array<string> {
+    let value = this.get("delegators");
+    return value.toStringArray();
+  }
+
+  set delegators(value: Array<string>) {
+    this.set("delegators", Value.fromStringArray(value));
+  }
+
+  get delegatingTo(): Bytes | null {
+    let value = this.get("delegatingTo");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set delegatingTo(value: Bytes | null) {
+    if (value === null) {
+      this.unset("delegatingTo");
+    } else {
+      this.set("delegatingTo", Value.fromBytes(value as Bytes));
     }
   }
 }
