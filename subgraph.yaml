@@ -9,7 +9,7 @@ dataSources:
     network: ropsten
     source:
       # ropsten
-      address: "0xFe99762d5bfC9d9763598Abe974c816B2434eA0A"
+      address: "0x960E3dEf0FEFd74eDd864Bd751f0079db640B145"
       abi: PollenDAO
       startBlock: 9517110
 
