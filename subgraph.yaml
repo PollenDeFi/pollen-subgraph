@@ -9,9 +9,9 @@ dataSources:
     network: ropsten
     source:
       # ropsten
-      address: "0x6eAC4e3ABB5C806a2C0EbaA5c697D8F6E20E83D7"
+      address: "0xA5bEEf04138B68FC029e0a3172D0868B39F8DE4a"
       abi: PollenDAO
-      startBlock: 9517110
+      startBlock: 10400000
 
       # mainnet
       # address: '0x99c0268759d26616AeC761c28336eccd72CCa39A'
