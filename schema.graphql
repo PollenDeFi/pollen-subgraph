@@ -16,6 +16,7 @@ enum ProposalStatus {
   Rejected
   Passed
   Pended
+  Expired
 }
 
 enum BaseCurrency {
