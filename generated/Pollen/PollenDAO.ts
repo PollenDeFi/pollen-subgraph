@@ -356,6 +356,10 @@ export class VotedOn__Params {
   get votes(): BigInt {
     return this._event.parameters[3].value.toBigInt();
   }
+
+  get delegatee(): Address {
+    return this._event.parameters[4].value.toAddress();
+  }
 }
 
 export class VotingTermsSwitched extends ethereum.Event {
@@ -394,6 +398,20 @@ export class PollenDAO__getBalancesResult {
     map.set("value0", ethereum.Value.fromAddressArray(this.value0));
     map.set("value1", ethereum.Value.fromUnsignedBigIntArray(this.value1));
     return map;
+  }
+}
+
+export class PollenDAO__getExecutionDataResultValue0Struct extends ethereum.Tuple {
+  get timestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get executor(): Address {
+    return this[1].toAddress();
+  }
+
+  get quoteCcyAmount(): BigInt {
+    return this[2].toBigInt();
   }
 }
 
@@ -589,6 +607,14 @@ export class PollenDAO__getVotingTermsResultValue0Struct extends ethereum.Tuple 
   get executionExpiryDelay(): BigInt {
     return this[5].toBigInt();
   }
+
+  get restrictExecPeriod(): BigInt {
+    return this[6].toBigInt();
+  }
+
+  get maxImpact(): i32 {
+    return this[7].toI32();
+  }
 }
 
 export class PollenDAO extends ethereum.SmartContract {
@@ -654,6 +680,56 @@ export class PollenDAO extends ethereum.SmartContract {
         value[0].toAddressArray(),
         value[1].toBigIntArray()
       )
+    );
+  }
+
+  getDelegatee(voter: Address): Address {
+    let result = super.call("getDelegatee", "getDelegatee(address):(address)", [
+      ethereum.Value.fromAddress(voter)
+    ]);
+
+    return result[0].toAddress();
+  }
+
+  try_getDelegatee(voter: Address): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "getDelegatee",
+      "getDelegatee(address):(address)",
+      [ethereum.Value.fromAddress(voter)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  getExecutionData(
+    proposalId: BigInt
+  ): PollenDAO__getExecutionDataResultValue0Struct {
+    let result = super.call(
+      "getExecutionData",
+      "getExecutionData(uint256):((uint32,address,uint256))",
+      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+    );
+
+    return result[0].toTuple() as PollenDAO__getExecutionDataResultValue0Struct;
+  }
+
+  try_getExecutionData(
+    proposalId: BigInt
+  ): ethereum.CallResult<PollenDAO__getExecutionDataResultValue0Struct> {
+    let result = super.tryCall(
+      "getExecutionData",
+      "getExecutionData(uint256):((uint32,address,uint256))",
+      [ethereum.Value.fromUnsignedBigInt(proposalId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTuple() as PollenDAO__getExecutionDataResultValue0Struct
     );
   }
 
@@ -916,7 +992,7 @@ export class PollenDAO extends ethereum.SmartContract {
   getVotingTerms(termsId: BigInt): PollenDAO__getVotingTermsResultValue0Struct {
     let result = super.call(
       "getVotingTerms",
-      "getVotingTerms(uint256):((bool,bool,uint8,uint32,uint32,uint32))",
+      "getVotingTerms(uint256):((bool,bool,uint8,uint32,uint32,uint32,uint32,uint8))",
       [ethereum.Value.fromUnsignedBigInt(termsId)]
     );
 
@@ -928,7 +1004,7 @@ export class PollenDAO extends ethereum.SmartContract {
   ): ethereum.CallResult<PollenDAO__getVotingTermsResultValue0Struct> {
     let result = super.tryCall(
       "getVotingTerms",
-      "getVotingTerms(uint256):((bool,bool,uint8,uint32,uint32,uint32))",
+      "getVotingTerms(uint256):((bool,bool,uint8,uint32,uint32,uint32,uint32,uint8))",
       [ethereum.Value.fromUnsignedBigInt(termsId)]
     );
     if (result.reverted) {
@@ -1109,6 +1185,14 @@ export class AddVotingTermsCallTermsStruct extends ethereum.Tuple {
 
   get executionExpiryDelay(): BigInt {
     return this[5].toBigInt();
+  }
+
+  get restrictExecPeriod(): BigInt {
+    return this[6].toBigInt();
+  }
+
+  get maxImpact(): i32 {
+    return this[7].toI32();
   }
 }
 

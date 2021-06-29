@@ -6,12 +6,12 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Pollen
-    network: ropsten
+    network: mumbai
     source:
       # ropsten
-      address: "0x419C191506ec60E91C5a7B3D152ec14A774BB8b7"
+      address: "0x70e2b09a6F35E4917895c7F55e06288eecA18283"
       abi: PollenDAO
-      startBlock: 9517110
+      startBlock: 15700000
 
       # mainnet
       # address: '0x99c0268759d26616AeC761c28336eccd72CCa39A'
@@ -42,7 +42,7 @@ dataSources:
           handler: handleAssetAdded
         - event: Submitted(uint256,uint8,address,uint256)
           handler: handleSubmitted
-        - event: VotedOn(uint256,address,bool,uint256)
+        - event: VotedOn(uint256,address,bool,uint256,address)
           handler: handleVotedOn
         - event: VotingTermsSwitched(uint256,bool)
           handler: handleTermsSwitched
