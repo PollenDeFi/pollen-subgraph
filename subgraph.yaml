@@ -9,7 +9,7 @@ dataSources:
     network: mumbai
     source:
       # ropsten
-      address: "0x70e2b09a6F35E4917895c7F55e06288eecA18283"
+      address: "0x2f6A98ed5BB0680B0D61Bb2C87C59930beCff37F"
       abi: PollenDAO
       startBlock: 15700000
       # mainnet

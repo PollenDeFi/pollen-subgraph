@@ -165,7 +165,7 @@ export class Voter extends Entity {
 
   get delegatee(): string | null {
     let value = this.get("delegatee");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toString();
@@ -357,7 +357,7 @@ export class Proposal extends Entity {
 
   get executedAt(): BigInt | null {
     let value = this.get("executedAt");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toBigInt();
@@ -651,7 +651,7 @@ export class Portfolio extends Entity {
 
   get assets(): Array<string> | null {
     let value = this.get("assets");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -699,7 +699,7 @@ export class CommunityRewards extends Entity {
 
   get earnableRewards(): Array<string> | null {
     let value = this.get("earnableRewards");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -768,7 +768,7 @@ export class Member extends Entity {
 
   get rewards(): Array<string> | null {
     let value = this.get("rewards");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -785,7 +785,7 @@ export class Member extends Entity {
 
   get withdrawals(): Array<string> | null {
     let value = this.get("withdrawals");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toStringArray();
@@ -811,7 +811,7 @@ export class Member extends Entity {
 
   get delegatingTo(): Bytes | null {
     let value = this.get("delegatingTo");
-    if (value === null || value.kind == ValueKind.NULL) {
+    if (value === null) {
       return null;
     } else {
       return value.toBytes();
