@@ -12,7 +12,6 @@ dataSources:
       address: "0x70e2b09a6F35E4917895c7F55e06288eecA18283"
       abi: PollenDAO
       startBlock: 15700000
-
       # mainnet
       # address: '0x99c0268759d26616AeC761c28336eccd72CCa39A'
       # abi: PollenDAO
@@ -60,5 +59,7 @@ dataSources:
           handler: handleUndelegated
         - event: AssetRemoved(indexed address)
           handler: handleAssetRemoved
+        - event: StatusChanged(uint256,uint8,uint8)
+          handler: handleStatusChanged
 
       file: ./src/mapping.ts
